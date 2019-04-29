@@ -27,7 +27,7 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
 
 #### Removed
 
-* ####filters
+* #### filters
     * `abs`: Braze doesn't support abs
 
 #### Added
