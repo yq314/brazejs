@@ -15,8 +15,8 @@ describe('render/syntax', function () {
       z: null,
       'has_value?': true,
       custom_attribute: {
-        'a b': 'AAA',
-      },
+        'a b': 'AAA'
+      }
     })
   })
 
@@ -103,8 +103,8 @@ describe('render/syntax', function () {
     })
 
     it('should eval attributes', async function () {
-      expect(await evalExp('${one}', ctx)).to.equal(1)
-      expect(await evalExp('custom_attribute.${ a b }', ctx)).to.equal('AAA')
+      expect(await evalExp('${one}', ctx)).to.equal(1) // eslint-disable-line no-template-curly-in-string
+      expect(await evalExp('custom_attribute.${ a b }', ctx)).to.equal('AAA') // eslint-disable-line no-template-curly-in-string
     })
   })
 })

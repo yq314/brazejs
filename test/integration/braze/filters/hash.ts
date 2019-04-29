@@ -1,4 +1,4 @@
-import {test} from '../../../stub/render'
+import { test } from '../../../stub/render'
 
 describe('braze/filters/hash', function () {
   describe('property_accessor', function () {

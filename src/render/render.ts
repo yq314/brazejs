@@ -1,10 +1,10 @@
-import {RenderError} from '../util/error'
+import { RenderError } from '../util/error'
 import assert from '../util/assert'
 import Context from '../context/context'
 import ITemplate from '../template/itemplate'
 
 export default class Render {
-  async renderTemplates(templates: ITemplate[], ctx: Context) {
+  async renderTemplates (templates: ITemplate[], ctx: Context) {
     assert(ctx, 'unable to evalTemplates: context undefined')
 
     let html = ''

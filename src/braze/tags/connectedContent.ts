@@ -12,16 +12,16 @@ export default <ITagImplOptions>{
   parse: function (tagToken: TagToken) {
     const match = tagToken.args.match(re)
     if (!match) {
-      throw new Error(`illegal token ${tagToken.raw}`);
+      throw new Error(`illegal token ${tagToken.raw}`)
     }
     this.url = match[1]
     const options = match[2]
     this.options = {}
     if (options) {
       options.split(/\s*:/).forEach((optStr) => {
-        if (optStr == '') return
+        if (optStr === '') return
 
-        const opts = optStr.split(/\s+/);
+        const opts = optStr.split(/\s+/)
         this.options[opts[0]] = opts.length > 1 ? opts[1] : true
       })
     }
@@ -32,15 +32,15 @@ export default <ITagImplOptions>{
 
     const method = (this.options.method || 'GET').toUpperCase()
     let cacheTTL = 300 * 1000 // default 5 mins
-    if (method != 'GET') {
+    if (method !== 'GET') {
       cacheTTL = 0
-    } else if (!!this.options.cache) {
+    } else if (this.options.cache) {
       cacheTTL = this.options.cache * 1000
     }
 
-    let content_type = this.options.content_type
-    if (method == 'POST') {
-      content_type = this.options.content_type || 'application/x-www-form-urlencoded'
+    let contentType = this.options.content_type
+    if (method === 'POST') {
+      contentType = this.options.content_type || 'application/x-www-form-urlencoded'
     }
 
     const rpOption = {
@@ -48,14 +48,14 @@ export default <ITagImplOptions>{
       method,
       headers: {
         'User-Agent': 'brazejs-client',
-        'Content-Type': content_type,
+        'Content-Type': contentType,
         'Accept': this.options.content_type
       },
       body: this.options.body,
       uri: renderedUrl,
       cacheKey: renderedUrl,
       cacheTTL,
-      timeout: 2000,
+      timeout: 2000
     }
 
     if (this.options.basic_auth) {
@@ -69,25 +69,25 @@ export default <ITagImplOptions>{
       }
 
       if (!secret.username || !secret.password) {
-        throw new Error(`No username or password set for ${this.options.basic_auth}`);
+        throw new Error(`No username or password set for ${this.options.basic_auth}`)
       }
 
       rpOption['auth'] = {
         user: secret.username,
-        pass: secret.password,
+        pass: secret.password
       }
     }
 
     let res
     try {
-      res = await rp(rpOption);
+      res = await rp(rpOption)
     } catch (e) {
       res = e
     }
 
     try {
       const jsonRes = JSON.parse(res.body)
-      if (Object.prototype.toString.call(jsonRes) == '[object Object]') {
+      if (Object.prototype.toString.call(jsonRes) === '[object Object]') {
         jsonRes.__http_status_code__ = res.statusCode
       }
       ctx.front()[this.options.save || 'connected'] = jsonRes

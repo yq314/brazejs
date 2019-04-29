@@ -1,9 +1,9 @@
 import Liquid from '../../../../src/liquid'
-import {expect, should, use} from 'chai'
+import { expect, should, use } from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
-import {ParseError, RenderError} from "../../../../src/util/error";
+import { ParseError, RenderError } from '../../../../src/util/error'
 
 should()
 use(chaiAsPromised)
@@ -14,11 +14,11 @@ describe('braze/tags/connected_content', function () {
 
     nock('http://localhost:8080', {
       reqheaders: {
-        'User-Agent': 'brazejs-client',
+        'User-Agent': 'brazejs-client'
       }
     })
       .get('/json/1')
-      .reply(200, {first_name: 'Qing', last_name: 'Ye'})
+      .reply(200, { first_name: 'Qing', last_name: 'Ye' })
       .persist()
   })
 
@@ -35,7 +35,7 @@ describe('braze/tags/connected_content', function () {
 
   it('should save result to default var', async function () {
     const src = '{% connected_content http://localhost:8080/json/{{user_id}} %}{{connected.first_name}}'
-    const html = await liquid.parseAndRender(src, {'user_id': '1'})
+    const html = await liquid.parseAndRender(src, { 'user_id': '1' })
     return expect(html).to.equal('Qing')
   })
 
@@ -48,14 +48,14 @@ describe('braze/tags/connected_content', function () {
 
   it('should fail if passed non url', async function () {
     const src = '{% connected_content aabbcc %}'
-    return await liquid.parseAndRender(src).should.be
+    return liquid.parseAndRender(src).should.be
       .rejectedWith(ParseError, 'illegal token {% connected_content aabbcc %}')
   })
 
   it('should output directly if response is not json', async function () {
     nock('http://localhost:8080', {
       reqheaders: {
-        'User-Agent': 'brazejs-client',
+        'User-Agent': 'brazejs-client'
       }
     })
       .get('/text')
@@ -69,11 +69,11 @@ describe('braze/tags/connected_content', function () {
   it('should add status code to result', async function () {
     nock('http://localhost:8080', {
       reqheaders: {
-        'User-Agent': 'brazejs-client',
+        'User-Agent': 'brazejs-client'
       }
     })
       .get('/500')
-      .reply(500, {a: 'b'})
+      .reply(500, { a: 'b' })
 
     const src = '{% connected_content http://localhost:8080/500 :save user %}{{user.__http_status_code__}}'
     const html = await liquid.parseAndRender(src)
@@ -84,7 +84,7 @@ describe('braze/tags/connected_content', function () {
     it('should set basic auth', async function () {
       nock('http://localhost:8080', {
         reqheaders: {
-          'User-Agent': 'brazejs-client',
+          'User-Agent': 'brazejs-client'
         }
       })
         .get('/auth')
@@ -96,7 +96,7 @@ describe('braze/tags/connected_content', function () {
         __secrets: {
           secrets: {
             username: 'username',
-            password: 'password',
+            password: 'password'
           }
         }
       })
@@ -105,20 +105,20 @@ describe('braze/tags/connected_content', function () {
 
     it('should fail if no secrets in context', async function () {
       const src = '{% connected_content http://localhost:8080/auth :basic_auth secrets %}'
-      return await liquid.parseAndRender(src).should.be
+      return liquid.parseAndRender(src).should.be
         .rejectedWith(RenderError, 'No secrets defined in context!')
     })
 
     it('should fail if no key defined for secrets in context', async function () {
       const src = '{% connected_content http://localhost:8080/auth :basic_auth secrets %}'
-      return await liquid.parseAndRender(src, {
+      return liquid.parseAndRender(src, {
         __secrets: {}
       }).should.be.rejectedWith(RenderError, 'No secret found for secrets')
     })
 
     it('should fail if no username in context', async function () {
       const src = '{% connected_content http://localhost:8080/auth :basic_auth secrets %}'
-      return await liquid.parseAndRender(src, {
+      return liquid.parseAndRender(src, {
         __secrets: {
           secrets: {
             password: 'password'
@@ -129,7 +129,7 @@ describe('braze/tags/connected_content', function () {
 
     it('should fail if no password in context', async function () {
       const src = '{% connected_content http://localhost:8080/auth :basic_auth secrets %}'
-      return await liquid.parseAndRender(src, {
+      return liquid.parseAndRender(src, {
         __secrets: {
           secrets: {
             username: 'username'
@@ -171,12 +171,11 @@ describe('braze/tags/connected_content', function () {
 
   describe('cache should work', async function () {
     let clock: sinon.SinonFakeTimers
-    let scope: nock.Scope
     beforeEach(function () {
       clock = sinon.useFakeTimers()
-      scope = nock('http://localhost:8080', {
+      nock('http://localhost:8080', {
         reqheaders: {
-          'User-Agent': 'brazejs-client',
+          'User-Agent': 'brazejs-client'
         }
       })
         .get('/cache')

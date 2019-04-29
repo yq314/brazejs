@@ -1,3 +1,3 @@
-import hash from './hash';
+import hash from './hash'
 
-export default {...hash}
+export default { ...hash }

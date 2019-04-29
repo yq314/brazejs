@@ -6,17 +6,17 @@ import ITemplate from './template/itemplate'
 import Tokenizer from './parser/tokenizer'
 import Render from './render/render'
 import Tag from './template/tag/tag'
-import {Filter} from './template/filter/filter'
+import { Filter } from './template/filter/filter'
 import Parser from './parser/parser'
 import ITagImplOptions from './template/tag/itag-impl-options'
 import Value from './template/value'
-import {isTruthy, isFalsy, evalExp, evalValue} from './render/syntax'
+import { isTruthy, isFalsy, evalExp, evalValue } from './render/syntax'
 import builtinTags from './builtin/tags'
 import builtinFilters from './builtin/filters'
 import brazeTags from './braze/tags'
 import brazeFilters from './braze/filters'
-import {LiquidOptions, NormalizedFullOptions, applyDefault, normalize} from './liquid-options'
-import {FilterImplOptions} from './template/filter/filter-impl-options'
+import { LiquidOptions, NormalizedFullOptions, applyDefault, normalize } from './liquid-options'
+import { FilterImplOptions } from './template/filter/filter-impl-options'
 
 export default class Liquid {
   public options: NormalizedFullOptions
@@ -25,7 +25,7 @@ export default class Liquid {
   private cache: object = {}
   private tokenizer: Tokenizer
 
-  constructor(opts: LiquidOptions = {}) {
+  constructor (opts: LiquidOptions = {}) {
     this.options = applyDefault(normalize(opts))
     this.parser = new Parser(this)
     this.renderer = new Render()
@@ -39,23 +39,23 @@ export default class Liquid {
     _.forOwn(brazeFilters, (handler, name) => this.registerFilter(name, handler))
   }
 
-  parse(html: string, filepath?: string) {
+  parse (html: string, filepath?: string) {
     const tokens = this.tokenizer.tokenize(html, filepath)
     return this.parser.parse(tokens)
   }
 
-  render(tpl: Array<ITemplate>, ctx?: object, opts?: LiquidOptions) {
-    const options = {...this.options, ...normalize(opts)}
+  render (tpl: Array<ITemplate>, ctx?: object, opts?: LiquidOptions) {
+    const options = { ...this.options, ...normalize(opts) }
     const scope = new Context(ctx, options)
     return this.renderer.renderTemplates(tpl, scope)
   }
 
-  async parseAndRender(html: string, ctx?: object, opts?: LiquidOptions) {
+  async parseAndRender (html: string, ctx?: object, opts?: LiquidOptions) {
     const tpl = await this.parse(html)
     return this.render(tpl, ctx, opts)
   }
 
-  async getTemplate(file: string, opts?: LiquidOptions) {
+  async getTemplate (file: string, opts?: LiquidOptions) {
     const options = normalize(opts)
     const roots = options.root ? [...options.root, ...this.options.root] : this.options.root
     const paths = roots.map(root => fs.resolve(root, file, this.options.extname))
@@ -75,32 +75,32 @@ export default class Liquid {
     throw err
   }
 
-  async renderFile(file: string, ctx?: object, opts?: LiquidOptions) {
+  async renderFile (file: string, ctx?: object, opts?: LiquidOptions) {
     const options = normalize(opts)
     const templates = await this.getTemplate(file, options)
     return this.render(templates, ctx, opts)
   }
 
-  evalValue(str: string, ctx: Context) {
+  evalValue (str: string, ctx: Context) {
     return new Value(str, this.options.strictFilters).value(ctx)
   }
 
-  registerFilter(name: string, filter: FilterImplOptions) {
+  registerFilter (name: string, filter: FilterImplOptions) {
     return Filter.register(name, filter)
   }
 
-  registerTag(name: string, tag: ITagImplOptions) {
+  registerTag (name: string, tag: ITagImplOptions) {
     return Tag.register(name, tag)
   }
 
-  plugin(plugin: (this: Liquid, L: typeof Liquid) => void) {
+  plugin (plugin: (this: Liquid, L: typeof Liquid) => void) {
     return plugin.call(this, Liquid)
   }
 
-  express() {
+  express () {
     const self = this
     return function (this: any, filePath: string, ctx: object, cb: (err: Error | null, html?: string) => void) {
-      const opts = {root: this.root}
+      const opts = { root: this.root }
       self.renderFile(filePath, ctx, opts).then(html => cb(null, html), cb)
     }
   }

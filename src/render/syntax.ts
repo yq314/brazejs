@@ -1,12 +1,12 @@
 import * as lexical from '../parser/lexical'
 import assert from '../util/assert'
 import Context from '../context/context'
-import {range, last, isFunction} from '../util/underscore'
-import {isComparable} from '../drop/icomparable'
-import {NullDrop} from '../drop/null-drop'
-import {EmptyDrop} from '../drop/empty-drop'
-import {BlankDrop} from '../drop/blank-drop'
-import {Drop} from '../drop/drop'
+import { range, last, isFunction } from '../util/underscore'
+import { isComparable } from '../drop/icomparable'
+import { NullDrop } from '../drop/null-drop'
+import { EmptyDrop } from '../drop/empty-drop'
+import { BlankDrop } from '../drop/blank-drop'
+import { Drop } from '../drop/drop'
 
 const binaryOperators: { [key: string]: (lhs: any, rhs: any) => boolean } = {
   '==': (l: any, r: any) => {
@@ -46,7 +46,7 @@ const binaryOperators: { [key: string]: (lhs: any, rhs: any) => boolean } = {
   'or': (l: any, r: any) => isTruthy(l) || isTruthy(r)
 }
 
-export async function parseExp(exp: string, ctx: Context): Promise<any> {
+export async function parseExp (exp: string, ctx: Context): Promise<any> {
   assert(ctx, 'unable to parseExp: scope undefined')
   const operatorREs = lexical.operators
   let match
@@ -70,12 +70,12 @@ export async function parseExp(exp: string, ctx: Context): Promise<any> {
   return parseValue(exp, ctx)
 }
 
-export async function evalExp(str: string, ctx: Context): Promise<any> {
+export async function evalExp (str: string, ctx: Context): Promise<any> {
   const value = await parseExp(str, ctx)
   return value instanceof Drop ? value.valueOf() : value
 }
 
-async function parseValue(str: string | undefined, ctx: Context): Promise<any> {
+async function parseValue (str: string | undefined, ctx: Context): Promise<any> {
   if (!str) return null
   str = str.trim()
 
@@ -97,15 +97,15 @@ async function parseValue(str: string | undefined, ctx: Context): Promise<any> {
   return ctx.get(str)
 }
 
-export async function evalValue(str: string | undefined, ctx: Context) {
+export async function evalValue (str: string | undefined, ctx: Context) {
   const value = await parseValue(str, ctx)
   return value instanceof Drop ? value.valueOf() : value
 }
 
-export function isTruthy(val: any): boolean {
+export function isTruthy (val: any): boolean {
   return !isFalsy(val)
 }
 
-export function isFalsy(val: any): boolean {
+export function isFalsy (val: any): boolean {
   return val === false || undefined === val || val === null
 }

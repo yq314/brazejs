@@ -40,6 +40,6 @@ export const operators = [
   /==|!=|<=|>=|<|>|\s+contains\s+/
 ]
 
-export function isRange(str: string) {
+export function isRange (str: string) {
   return rangeLine.test(str)
 }
