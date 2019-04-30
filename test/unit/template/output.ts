@@ -17,13 +17,13 @@ describe('Output', function () {
     })
     const output = new Output({ value: 'foo' } as OutputToken, false)
     const html = await output.render(scope)
-    return expect(html).to.equal('[object Object]')
+    return expect(html).to.equal('{"obj":{"arr":["a",2]}}')
   })
   it('should skip function property', async function () {
     const scope = new Context({ obj: { foo: 'foo', bar: (x: any) => x } })
     const output = new Output({ value: 'obj' } as OutputToken, false)
     const html = await output.render(scope)
-    return expect(html).to.equal('[object Object]')
+    return expect(html).to.equal('{"foo":"foo"}')
   })
   it('should respect to .toString()', async () => {
     const scope = new Context({ obj: { toString: () => 'FOO' } })

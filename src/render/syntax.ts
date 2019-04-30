@@ -99,17 +99,7 @@ async function parseValue (str: string | undefined, ctx: Context): Promise<any> 
 
 export async function evalValue (str: string | undefined, ctx: Context) {
   const value = await parseValue(str, ctx)
-
-  if (value instanceof  Drop) {
-    return value.valueOf()
-  }
-
-  const strVal = Object.prototype.toString.call(value)
-  if ( strVal === '[object Object]' || strVal === '[object Array]') {
-    return JSON.stringify(value)
-  }
-
-  return value
+  return value instanceof Drop ? value.valueOf() : value
 }
 
 export function isTruthy (val: any): boolean {

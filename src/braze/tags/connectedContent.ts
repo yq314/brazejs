@@ -2,7 +2,8 @@ import TagToken from '../../parser/tag-token'
 import Context from '../../context/context'
 import ITagImplOptions from '../../template/tag/itag-impl-options'
 // @ts-ignore
-import * as rp from 'request-promise-cache'
+import * as rp_ from 'request-promise-cache'
+const rp = rp_
 
 const re = new RegExp(`(https?[^\\s]+)(\\s+.*)?$`)
 
@@ -43,7 +44,7 @@ export default <ITagImplOptions>{
     }
 
     const rpOption = {
-      resolveWithFullResponse: true,
+      'resolveWithFullResponse': true,
       method,
       headers: {
         'User-Agent': 'brazejs-client',
@@ -77,16 +78,19 @@ export default <ITagImplOptions>{
       }
     }
 
-    const res = await rp(rpOption)
+    let res
+    try {
+      res = await rp(rpOption)
+    } catch (e) {
+      res = e
+    }
 
     try {
       const jsonRes = JSON.parse(res.body)
       if (Object.prototype.toString.call(jsonRes) === '[object Object]') {
         jsonRes.__http_status_code__ = res.statusCode
       }
-      ctx.push({
-        [this.options.save || 'connected']: jsonRes
-      })
+      ctx.environments[this.options.save || 'connected'] = jsonRes
     } catch (error) {
       return res.body
     }

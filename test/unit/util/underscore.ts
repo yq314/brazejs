@@ -31,6 +31,9 @@ describe('util/underscore', function () {
     it('should return "" for undefined', function () {
       expect(_.stringify(undefined)).to.equal('')
     })
+    it('should return JSON for object', function () {
+      expect(_.stringify({ a: 'b' })).to.equal('{"a":"b"}')
+    })
     it('should return regex string for RegExp', function () {
       const reg = /foo/g
       expect(_.stringify(reg)).to.equal('/foo/g')
