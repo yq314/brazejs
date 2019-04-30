@@ -91,6 +91,8 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         {{ ${first_name} }}
         {{ custom_attribute.${attr1} }}
         ```
+        
+        ⚠️ A space is required before the closing brackets for output `}}`, but it's not necessary in Braze.
 
 #### TBD
 Below Braze supported [filters][braze/filters] are yet to be added:

@@ -62,4 +62,16 @@ describe('.parseAndRender()', function () {
     const html = await engine.parseAndRender(src)
     expect(html).to.equal('true')
   })
+  it('should support ${} syntax', async function () {
+    const src = '{{ ${a} }} {{ b.${c} }}'
+    const ctx = { a: 'va', b: { c: 'vc' } }
+    const html = await engine.parseAndRender(src, ctx)
+    return expect(html).to.equal('va vc')
+  })
+  it('should work with connected content', async function () {
+    const src = '{% connected_content https://reqres.in/api/users/{{user_id}} :save user %}{{user.data.first_name}}'
+    const ctx = { user_id: 1 }
+    const html = await engine.parseAndRender(src, ctx)
+    return expect(html).to.equal('George')
+  })
 })
