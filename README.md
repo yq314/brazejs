@@ -73,6 +73,24 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         
 * #### output
     * `${}` support for [Personalization tags][personalization tags]
+  
+        For it to work the attributes need to be added into [context][liquidjs/context] 
+
+        ```
+        {
+            "first_name": "<my_name>",
+            "user_id": "<my_uid>",
+            "custom_attribute": {
+                "<attr1>": "<val1>",
+                "<attr2>": "<val2>"
+            }
+        }
+        ```
+        Then you can access them in the template:
+        ```
+        {{ ${first_name} }}
+        {{ custom_attribute.${attr1} }}
+        ```
 
 #### TBD
 Below Braze supported [filters][braze/filters] are yet to be added:
