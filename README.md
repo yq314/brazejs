@@ -72,7 +72,7 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         ```
         
 * #### output
-    * `${}` support for [Personalization tags][personalization tags], 
+    * `${}` support for [Personalization tags][personalization tags]
 
 #### TBD
 Below Braze supported [filters][braze/filters] are yet to be added:
