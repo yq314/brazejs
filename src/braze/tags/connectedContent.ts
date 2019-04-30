@@ -44,7 +44,7 @@ export default <ITagImplOptions>{
     }
 
     const rpOption = {
-      resolveWithFullResponse: true,
+      'resolveWithFullResponse': true,
       method,
       headers: {
         'User-Agent': 'brazejs-client',
@@ -90,7 +90,7 @@ export default <ITagImplOptions>{
       if (Object.prototype.toString.call(jsonRes) === '[object Object]') {
         jsonRes.__http_status_code__ = res.statusCode
       }
-      ctx.front()[this.options.save || 'connected'] = jsonRes
+      ctx.environments[this.options.save || 'connected'] = jsonRes
     } catch (error) {
       return res.body
     }

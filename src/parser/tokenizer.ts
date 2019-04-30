@@ -6,7 +6,7 @@ import OutputToken from './output-token'
 import { TokenizationError } from '../util/error'
 import { NormalizedFullOptions, applyDefault } from '../liquid-options'
 
-enum ParseState { HTML, OUTPUT, TAG }
+enum ParseState { HTML, OUTPUT, TAG, ATTRIBUTE }
 
 export default class Tokenizer {
   private options: NormalizedFullOptions
@@ -52,6 +52,23 @@ export default class Tokenizer {
           state = ParseState.TAG
           continue
         }
+      } else if (
+        state === ParseState.OUTPUT &&
+        input.substr(p, 2) === '${'
+      ) {
+        buffer += '${'
+        line = curLine
+        col = p - lineBegin + 1
+        p += 2
+        state = ParseState.ATTRIBUTE
+        continue
+      } else if (state === ParseState.ATTRIBUTE && input[p] === '}') {
+        buffer += '}'
+        line = curLine
+        col = p - lineBegin + 1
+        p += 1
+        state = ParseState.OUTPUT
+        continue
       } else if (
         state === ParseState.OUTPUT &&
         input.substr(p, outputDelimiterRight.length) === outputDelimiterRight

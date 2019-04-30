@@ -28,7 +28,8 @@ export function promisify (fn: any) {
 export function stringify (value: any): string {
   if (isNil(value)) return ''
   value = toLiquid(value)
-  return String(value)
+  const str = String(value)
+  return str === '[object Object]' ? JSON.stringify(value) : str
 }
 
 export function toLiquid (value: any): any {

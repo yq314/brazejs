@@ -32,7 +32,7 @@ export const boolLine = new RegExp(`^${bool.source}$`, 'i')
 export const quotedLine = new RegExp(`^${quoted.source}$`)
 export const rangeLine = new RegExp(`^${rangeCapture.source}$`)
 
-export const attribute = new RegExp(`^\\s*(?:(${identifier.source})\\.)?\\$\\{\\s*([\\s\\S]*?)\\s*\\}\\s*$`)
+export const attribute = new RegExp(`^\\s*(?:(${identifier.source})\\.)?\\$\\{\\s*([\\s\\S]+?)\\s*\\}\\s*$`)
 
 export const operators = [
   /\s+or\s+/,

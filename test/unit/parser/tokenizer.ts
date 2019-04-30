@@ -42,6 +42,21 @@ describe('tokenizer', function () {
       expect(tokens[1].value).to.equal('bar')
       expect(tokens[2].value).to.equal('foo')
     })
+    it('should handle ${} in values', function () {
+      const html = '{{${foo}}}{{ ${bar}}}{{${foo} }}{{ ${bar} }}' // eslint-disable-line no-template-curly-in-string
+      const tokens = tokenizer.tokenize(html)
+
+      expect(tokens.length).to.equal(4)
+      expect(tokens[0]).instanceOf(OutputToken)
+      expect(tokens[1]).instanceOf(OutputToken)
+      expect(tokens[2]).instanceOf(OutputToken)
+      expect(tokens[3]).instanceOf(OutputToken)
+
+      expect(tokens[0].value).to.equal('${foo}') // eslint-disable-line no-template-curly-in-string
+      expect(tokens[1].value).to.equal('${bar}') // eslint-disable-line no-template-curly-in-string
+      expect(tokens[2].value).to.equal('${foo}') // eslint-disable-line no-template-curly-in-string
+      expect(tokens[3].value).to.equal('${bar}') // eslint-disable-line no-template-curly-in-string
+    })
     it('should keep white spaces and newlines', function () {
       const html = '{%foo%}\n{%bar %}  \n {%alice%}'
       const tokens = tokenizer.tokenize(html)

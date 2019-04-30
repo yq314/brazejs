@@ -23,7 +23,7 @@ export default [{
     sourcemap,
     banner
   }],
-  external: ['path', 'fs'],
+  external: ['path', 'fs', 'request-promise-cache'],
   plugins: [typescript({
     tsconfigOverride: {
       include: [ 'src' ],
