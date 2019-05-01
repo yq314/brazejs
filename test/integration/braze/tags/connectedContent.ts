@@ -40,7 +40,7 @@ describe('braze/tags/connected_content', function () {
   })
 
   it('should save to var', async function () {
-    const src = '{% connected_content http://localhost:8080/json/1 :save user %}' +
+    const src = '{% connected_content http://localhost:8080/json/1 :retry :save user %}' +
       '{{user.first_name}} {{user.__http_status_code__}}'
     const html = await liquid.parseAndRender(src)
     expect(html).to.equal('Qing 200')
@@ -78,6 +78,20 @@ describe('braze/tags/connected_content', function () {
     const src = '{% connected_content http://localhost:8080/500 :save user %}{{user.__http_status_code__}}'
     const html = await liquid.parseAndRender(src)
     return expect(html).to.equal('500')
+  })
+
+  it('should not add status code if result is not object', async function () {
+    nock('http://localhost:8080', {
+      reqheaders: {
+        'User-Agent': 'brazejs-client'
+      }
+    })
+      .get('/200')
+      .reply(200, [1, 2])
+
+    const src = '{% connected_content http://localhost:8080/200 :save user %}{{user.__http_status_code__}}'
+    const html = await liquid.parseAndRender(src)
+    return expect(html).to.equal('')
   })
 
   describe('basic auth should work', async function () {
@@ -223,6 +237,16 @@ describe('braze/tags/connected_content', function () {
       clock.tick(2)
       const html3 = await liquid.parseAndRender(src)
       expect(html3).to.equal('')
+    })
+
+    it('should not cache if set to 0', async function () {
+      const src = '{% connected_content http://localhost:8080/cache :cache 0 %}'
+      const html = await liquid.parseAndRender(src)
+      expect(html).to.equal('cached response')
+
+      clock.tick(1)
+      const html2 = await liquid.parseAndRender(src)
+      expect(html2).to.equal('')
     })
   })
 })

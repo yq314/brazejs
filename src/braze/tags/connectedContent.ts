@@ -34,8 +34,14 @@ export default <ITagImplOptions>{
     let cacheTTL = 300 * 1000 // default 5 mins
     if (method !== 'GET') {
       cacheTTL = 0
-    } else if (this.options.cache) {
-      cacheTTL = this.options.cache * 1000
+    } else {
+      const cache = parseInt(this.options.cache, 10)
+      if (cache > 0) {
+        cacheTTL = cache * 1000
+      } else if (cache === 0) {
+        // This is a hack, nano-cache will not expire cache when ttl = 0
+        cacheTTL = 1
+      }
     }
 
     let contentType = this.options.content_type
