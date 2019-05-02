@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/yq314/brazejs/compare/v1.0.3...v1.0.4) (2019-05-02)
+
+
+### Bug Fixes
+
+* improve error handling so abort_message will abort the entire message ([b6a892b](https://github.com/yq314/brazejs/commit/b6a892b))
+
 ## [1.0.3](https://github.com/yq314/brazejs/compare/v1.0.2...v1.0.3) (2019-05-01)
 
 
