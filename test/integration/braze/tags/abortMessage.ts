@@ -32,4 +32,11 @@ describe('braze/tags/abort_message', function () {
     return liquid.parseAndRender(src).should.be
       .rejectedWith(ParseError, 'illegal token {% abort_message(ddd)')
   })
+
+  it('should abort only once and ignore the rest', async function () {
+    const src = '{% if abort %} {% abort_message("abort 1") %} {% endif %}' +
+      '{% if abort %} {% abort_message("abort 2") %} {% endif %}'
+    const html = await liquid.parseAndRender(src, { abort: true })
+    return expect(html).to.equal('abort 1')
+  })
 })

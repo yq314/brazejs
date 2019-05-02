@@ -52,7 +52,14 @@ export default class Liquid {
 
   async parseAndRender (html: string, ctx?: object, opts?: LiquidOptions) {
     const tpl = await this.parse(html)
-    return this.render(tpl, ctx, opts)
+    try {
+      return await this.render(tpl, ctx, opts)
+    } catch (e) {
+      if (e.name === 'AbortError') {
+        return e.message
+      }
+      throw e
+    }
   }
 
   async getTemplate (file: string, opts?: LiquidOptions) {

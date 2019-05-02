@@ -14,7 +14,7 @@ export default class Render {
       } catch (e) {
         if (e.name === 'AbortError') {
           e.resolvedHTML = ''
-          return e.message
+          throw e
         }
 
         if (e.name === 'RenderBreakError') {
