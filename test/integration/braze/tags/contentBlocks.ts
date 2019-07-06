@@ -1,9 +1,9 @@
+/* eslint-disable no-template-curly-in-string */
 import Liquid from '../../../../src/liquid'
 import { expect, should, use } from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {mock, restore} from "../../../stub/mockfs";
+import { mock, restore } from '../../../stub/mockfs'
 import { ParseError } from '../../../../src/util/error'
-
 
 should()
 use(chaiAsPromised)

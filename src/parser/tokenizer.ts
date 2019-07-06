@@ -96,8 +96,8 @@ export default class Tokenizer {
         input.substr(p, outputDelimiterRight.length) === outputDelimiterRight
       ) {
         buffer += outputDelimiterRight
-        const tokenType = state === ParseState.OUTPUT ? OutputToken : TagToken
-        tokens.push(new tokenType(buffer, buffer.slice(outputDelimiterLeft.length, -outputDelimiterRight.length), input, line, col, this.options, file))
+        const TokenType = state === ParseState.OUTPUT ? OutputToken : TagToken
+        tokens.push(new TokenType(buffer, buffer.slice(outputDelimiterLeft.length, -outputDelimiterRight.length), input, line, col, this.options, file))
         p += outputDelimiterRight.length
         buffer = ''
         line = curLine

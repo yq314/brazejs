@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import { expect } from 'chai'
 import Tokenizer from '../../../src/parser/tokenizer'
 import TagToken from '../../../src/parser/tag-token'
@@ -43,7 +44,7 @@ describe('tokenizer', function () {
       expect(tokens[2].value).to.equal('foo')
     })
     it('should handle ${} in values', function () {
-      const html = '{{${foo}}}{{ ${bar}}}{{${foo} }}{{ ${bar} }}' // eslint-disable-line no-template-curly-in-string
+      const html = '{{${foo}}}{{ ${bar}}}{{${foo} }}{{ ${bar} }}'
       const tokens = tokenizer.tokenize(html)
 
       expect(tokens.length).to.equal(4)
@@ -52,10 +53,10 @@ describe('tokenizer', function () {
       expect(tokens[2]).instanceOf(OutputToken)
       expect(tokens[3]).instanceOf(OutputToken)
 
-      expect(tokens[0].value).to.equal('${foo}') // eslint-disable-line no-template-curly-in-string
-      expect(tokens[1].value).to.equal('${bar}') // eslint-disable-line no-template-curly-in-string
-      expect(tokens[2].value).to.equal('${foo}') // eslint-disable-line no-template-curly-in-string
-      expect(tokens[3].value).to.equal('${bar}') // eslint-disable-line no-template-curly-in-string
+      expect(tokens[0].value).to.equal('${foo}')
+      expect(tokens[1].value).to.equal('${bar}')
+      expect(tokens[2].value).to.equal('${foo}')
+      expect(tokens[3].value).to.equal('${bar}')
     })
     it('should handle content blocks', function () {
       const html = '{{content_blocks.${fileName}}}'
