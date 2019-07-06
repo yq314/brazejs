@@ -1,12 +1,12 @@
 {
-  "name": "liquidjs-demo-typescript",
-  "description": "TypeScript demo for liquidjs",
+  "name": "brazejs-demo-typescript",
+  "description": "TypeScript demo for brazejs",
   "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts"
   },
   "dependencies": {
-    "liquidjs": "^7.0.0"
+    "brazejs": "^1.0.0"
   },
   "devDependencies": {
     "ts-node": "^8.0.2"
