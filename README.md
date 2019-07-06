@@ -39,7 +39,19 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         ```
         {{ hash | property_accessor: 'key' }}
         ```
+        
+    * url_escape
     
+        ⚠️ this uses `encodeURI` which is slightly different from Braze's implementation
+    
+    * url_param_escape
+    
+        ⚠️ this uses `encodeURIComponent` which is slightly different from Braze's implementation
+    
+    * json_escape
+    
+        ⚠️ this uses `JSON.stringify` which is slightly different from Braze's implementation
+        
 * #### Tags
     * [abort_message][braze/abort_message]: abort rendering and output an optional message
         
@@ -124,7 +136,7 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
                 }
             }
         
-        **NOTE: At time of writing, Braze only support nesting 2 levels of content blocks**
+        ⚠️ At time of writing, Braze only support nesting 2 levels of content blocks
 
         
 #### TBD
@@ -136,16 +148,9 @@ Below Braze supported [filters][braze/filters] are yet to be added:
     * sha2
     * base64
     * hmac_sha1
-    
-* #### URL filters
-    * url_escape
-    * url_param_escape
 
 * #### Number formatting filters
     * number_with_delimiter
-    
-* #### JSON escape / String escape filters
-    * json_escape
 
 [braze/liquid]: https://www.braze.com/docs/user_guide/personalization_and_dynamic_content/liquid/overview/
 [tutorial]: https://shopify.github.io/liquid/basics/introduction/

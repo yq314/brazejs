@@ -2,6 +2,8 @@ import Liquid from '../../../../src/liquid'
 import { expect, should, use } from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {mock, restore} from "../../../stub/mockfs";
+import { ParseError } from '../../../../src/util/error'
+
 
 should()
 use(chaiAsPromised)
@@ -153,6 +155,24 @@ describe('braze/tags/content_blocks', function () {
     return expect(html).to.equal('foobar2')
   })
 
+  it('should support camelCase content blocks', async function () {
+    mock({
+      './current.liquid': 'foo{{content_blocks.${contentBlock}}}',
+      './content_block': 'bar'
+    })
+    const html = await liquid.renderFile('./current.liquid')
+    return expect(html).to.equal('foobar')
+  })
+
+  it('should support camelCase content blocks with default .liquid ext', async function () {
+    mock({
+      './current.liquid': 'foo{{content_blocks.${contentBlock}}}',
+      './content_block.liquid': 'bar'
+    })
+    const html = await liquid.renderFile('./current.liquid')
+    return expect(html).to.equal('foobar')
+  })
+
   it('should pass context to content blocks', async function () {
     mock({
       './current.liquid': 'foo{{content_blocks.${content_block}}}',
@@ -162,5 +182,13 @@ describe('braze/tags/content_blocks', function () {
       var: 'value_of_var'
     })
     return expect(html).to.equal('foobarvalue_of_var')
+  })
+
+  it('should fail for invalid format', async function () {
+    mock({
+      './current.liquid': 'foo{{content_blocks.${}}}'
+    })
+    return liquid.renderFile('./current.liquid').should.be
+      .rejectedWith(ParseError, 'illegal token {{content_blocks.${}}}')
   })
 })
