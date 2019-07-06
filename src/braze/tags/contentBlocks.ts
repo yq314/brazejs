@@ -32,7 +32,7 @@ const renderContentBlocks = async function (liquid: Liquid, ctx: Context, fileNa
             try {
                 template = await liquid.getTemplate(fileName + ext, opts)
             } catch (err) {
-                template = await liquid.getTemplate(camelToSnakeCase(fileName + ext), opts)
+                template = await liquid.getTemplate(camelToSnakeCase(fileName) + ext, opts)
             }
         }
     }
