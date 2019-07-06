@@ -32,7 +32,7 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
 
 #### Added
 
-* #### filters
+* #### Filters
     * [property_accessor][braze/property_accessor]: access value from hash
         
         Example:
@@ -40,7 +40,7 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         {{ hash | property_accessor: 'key' }}
         ```
     
-* #### tags
+* #### Tags
     * [abort_message][braze/abort_message]: abort rendering and output an optional message
         
         Example:
@@ -71,7 +71,7 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         }
         ```
         
-* #### output
+* #### Output
     * `${}` support for [Personalization tags][personalization tags]
   
         For it to work the attributes need to be added into [context][liquidjs/context] 
@@ -94,6 +94,38 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
     * Object will be converted by `JSON.stringify()`
     
         If context is `{ "obj": {"foo": "bar"} }`, [liquidjs][liquidjs] renders to `[object Object]`, while brazejs renders it to `{"foo":"bar"}`
+
+* #### Content blocks
+    * [Content Blocks](https://www.braze.com/docs/user_guide/engagement_tools/templates_and_media/content_blocks/) is supported
+    
+        ```
+        {{content_blocks.${contentBlockName}}}
+        ```
+        
+        By default the content blocks template is being searched in directories in following order:
+        
+            1. current dir
+            2. content_blocks under current dir
+            3. content_blocks in parent dir
+            
+        It will also search for file names in this order:
+        
+            1. exact match
+            2. convert file name to snake_case
+            3. append .liquid
+            4. convert file name to snake_case and append .liquid
+            
+        It's also possible to configure the root dir and file extension in [context][liquidjs/context]:
+        
+            {
+                "__contentBlocks": {
+                    "root": "path_to_dir",
+                    ""
+                }
+            }
+        
+        **NOTE: At time of writing, Braze only support nesting 2 levels of content blocks**
+
         
 #### TBD
 Below Braze supported [filters][braze/filters] are yet to be added:

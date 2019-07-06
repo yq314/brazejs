@@ -57,6 +57,22 @@ describe('tokenizer', function () {
       expect(tokens[2].value).to.equal('${foo}') // eslint-disable-line no-template-curly-in-string
       expect(tokens[3].value).to.equal('${bar}') // eslint-disable-line no-template-curly-in-string
     })
+    it('should handle content blocks', function () {
+      const html = '{{content_blocks.${fileName}}}'
+      const tokens = tokenizer.tokenize(html)
+
+      expect(tokens.length).to.equal(1)
+      expect(tokens[0]).instanceOf(TagToken)
+      expect(tokens[0].value).to.equal('content_blocks.${fileName}')
+    })
+    it('should handle content blocks with spaces', function () {
+      const html = '{{ content_blocks.${fileName} }}'
+      const tokens = tokenizer.tokenize(html)
+
+      expect(tokens.length).to.equal(1)
+      expect(tokens[0]).instanceOf(TagToken)
+      expect(tokens[0].value).to.equal('content_blocks.${fileName}')
+    })
     it('should keep white spaces and newlines', function () {
       const html = '{%foo%}\n{%bar %}  \n {%alice%}'
       const tokens = tokenizer.tokenize(html)

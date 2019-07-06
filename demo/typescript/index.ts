@@ -1,4 +1,4 @@
-import Liquid from 'liquidjs'
+import Liquid from 'brazejs'
 
 const engine = new Liquid({
   root: __dirname,

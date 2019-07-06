@@ -6,7 +6,7 @@ import OutputToken from './output-token'
 import { TokenizationError } from '../util/error'
 import { NormalizedFullOptions, applyDefault } from '../liquid-options'
 
-enum ParseState { HTML, OUTPUT, TAG, ATTRIBUTE }
+enum ParseState { HTML, OUTPUT, TAG, ATTRIBUTE, CONTENT_BLOCKS }
 
 export default class Tokenizer {
   private options: NormalizedFullOptions
@@ -21,6 +21,10 @@ export default class Tokenizer {
       outputDelimiterLeft,
       outputDelimiterRight
     } = this.options
+    const attributeLeft = '${'
+    const attributeRight = '}'
+    const contentBlocksTag = 'content_blocks'
+
     let p = 0
     let curLine = 1
     let state = ParseState.HTML
@@ -28,6 +32,7 @@ export default class Tokenizer {
     let lineBegin = 0
     let line = 1
     let col = 1
+    let originalState = ParseState.HTML
 
     while (p < input.length) {
       if (input[p] === '\n') {
@@ -37,11 +42,26 @@ export default class Tokenizer {
       if (state === ParseState.HTML) {
         if (input.substr(p, outputDelimiterLeft.length) === outputDelimiterLeft) {
           if (buffer) tokens.push(new HTMLToken(buffer, input, line, col, file))
-          buffer = outputDelimiterLeft
+
           line = curLine
           col = p - lineBegin + 1
+          buffer = outputDelimiterLeft
           p += outputDelimiterLeft.length
-          state = ParseState.OUTPUT
+
+          // handle content blocks
+          while (input.substr(p, 1) === ' ') {
+            buffer += ' '
+            p += 1
+          }
+
+          if (input.substr(p, contentBlocksTag.length) === contentBlocksTag) {
+            buffer += contentBlocksTag
+            p += contentBlocksTag.length
+            state = ParseState.CONTENT_BLOCKS
+          } else {
+            state = ParseState.OUTPUT
+          }
+
           continue
         } else if (input.substr(p, tagDelimiterLeft.length) === tagDelimiterLeft) {
           if (buffer) tokens.push(new HTMLToken(buffer, input, line, col, file))
@@ -53,28 +73,31 @@ export default class Tokenizer {
           continue
         }
       } else if (
-        state === ParseState.OUTPUT &&
-        input.substr(p, 2) === '${'
+        (state === ParseState.OUTPUT || state === ParseState.CONTENT_BLOCKS) &&
+        input.substr(p, attributeLeft.length) === attributeLeft
       ) {
-        buffer += '${'
+        originalState = state
+        buffer += attributeLeft
         line = curLine
         col = p - lineBegin + 1
-        p += 2
+        p += attributeLeft.length
         state = ParseState.ATTRIBUTE
         continue
-      } else if (state === ParseState.ATTRIBUTE && input[p] === '}') {
-        buffer += '}'
+      } else if (state === ParseState.ATTRIBUTE && input[p] === attributeRight) {
+        buffer += attributeRight
         line = curLine
         col = p - lineBegin + 1
-        p += 1
-        state = ParseState.OUTPUT
+        p += attributeRight.length
+        state = originalState
+        originalState = ParseState.HTML
         continue
       } else if (
-        state === ParseState.OUTPUT &&
+        (state === ParseState.OUTPUT || state === ParseState.CONTENT_BLOCKS) &&
         input.substr(p, outputDelimiterRight.length) === outputDelimiterRight
       ) {
         buffer += outputDelimiterRight
-        tokens.push(new OutputToken(buffer, buffer.slice(outputDelimiterLeft.length, -outputDelimiterRight.length), input, line, col, this.options, file))
+        const tokenType = state === ParseState.OUTPUT ? OutputToken : TagToken
+        tokens.push(new tokenType(buffer, buffer.slice(outputDelimiterLeft.length, -outputDelimiterRight.length), input, line, col, this.options, file))
         p += outputDelimiterRight.length
         buffer = ''
         line = curLine
