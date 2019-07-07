@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/yq314/brazejs/compare/v1.1.0...v1.1.1) (2019-07-07)
+
+
+### Bug Fixes
+
+* Allow parsing variables in assign tag ([2ab4a2f](https://github.com/yq314/brazejs/commit/2ab4a2f))
+
 # [1.1.0](https://github.com/yq314/brazejs/compare/v1.0.4...v1.1.0) (2019-07-06)
 
 
