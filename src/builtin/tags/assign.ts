@@ -14,6 +14,12 @@ export default {
     this.value = match[2]
   },
   render: async function (ctx: Context) {
-    ctx.front()[this.key] = await this.liquid.evalValue(this.value, ctx)
+    let parsedValue
+    if (this.value.startsWith(ctx.opts.outputDelimiterLeft)) {
+      parsedValue = await this.liquid.parseAndRender(this.value, ctx.getAll())
+    } else {
+      parsedValue = await this.liquid.evalValue(this.value, ctx)
+    }
+    ctx.front()[this.key] = parsedValue
   }
 } as ITagImplOptions
