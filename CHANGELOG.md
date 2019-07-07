@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/yq314/brazejs/compare/v1.0.4...v1.1.0) (2019-07-06)
+
+
+### Features
+
+* Add filters: json_escape, url_escape, url_param_escape ([2492101](https://github.com/yq314/brazejs/commit/2492101))
+* add support for content blocks ([c6b605a](https://github.com/yq314/brazejs/commit/c6b605a))
+
 ## [1.0.4](https://github.com/yq314/brazejs/compare/v1.0.3...v1.0.4) (2019-05-02)
 
 
