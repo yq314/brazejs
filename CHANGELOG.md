@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/yq314/brazejs/compare/v1.1.1...v1.1.2) (2019-07-07)
+
+
+### Bug Fixes
+
+* support spaces around equal ([57aaa71](https://github.com/yq314/brazejs/commit/57aaa71))
+
 ## [1.1.1](https://github.com/yq314/brazejs/compare/v1.1.0...v1.1.1) (2019-07-07)
 
 
