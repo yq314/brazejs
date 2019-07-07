@@ -41,8 +41,8 @@ describe('tags/assign', function () {
   })
   it('should assign variable value', async function () {
     const src = '{% assign foo={{bar}} %}{{foo}}'
-    const html = await liquid.parseAndRender(src, {bar: "value_of_bar"})
-    return expect(html).to.equal("value_of_bar")
+    const html = await liquid.parseAndRender(src, { bar: 'value_of_bar' })
+    return expect(html).to.equal('value_of_bar')
   })
   it('should assign var-1', async function () {
     const src = '{% assign var-1 = 5 %}{{ var-1 }}'
