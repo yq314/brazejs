@@ -123,16 +123,16 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         It will also search for file names in this order:
         
             1. exact match
-            2. convert file name to snake_case
+            2. convert file name to kebab-case
             3. append .liquid
-            4. convert file name to snake_case and append .liquid
+            4. convert file name to kebab-case and append .liquid
             
         It's also possible to configure the root dir and file extension in [context][liquidjs/context]:
         
             {
                 "__contentBlocks": {
                     "root": "path_to_dir",
-                    ""
+                    "ext": ".html"
                 }
             }
         

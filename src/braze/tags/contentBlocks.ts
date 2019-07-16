@@ -5,34 +5,41 @@ import ITagImplOptions from '../../template/tag/itag-impl-options'
 import assert from '../../util/assert'
 import Liquid from '../../liquid'
 import BlockMode from '../../context/block-mode'
+import { resolve } from 'path'
 
-const camelToSnakeCase = function (text: string) {
-  return text.replace(/(.)([A-Z][a-z]+)/, '$1_$2')
-    .replace(/([a-z0-9])([A-Z])/, '$1_$2')
-    .toLowerCase()
-}
+const toKebabCase = (str: String) =>
+  str!.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)!
+    .map(x => x.toLocaleLowerCase())
+    .join('-')
 
 const renderContentBlocks = async function (liquid: Liquid, ctx: Context, fileName: string) {
   const customOpts = ctx.environments['__contentBlocks']
 
-  const opts = {
-    ...ctx.opts,
-    root: (customOpts && customOpts['root']) || ['.', './content_blocks', '../content_blocks']
+  const opts = {}
+  const root = ctx.opts.root.slice(0)
+  if (root.length === 1) {
+    const base = root[0]
+
+    if (customOpts && customOpts.root) {
+      opts['root'] = resolve(base, customOpts.root)
+    } else {
+      opts['root'] = ['./content_blocks', '../content_blocks'].map(p => resolve(base, p))
+    }
   }
 
-  const ext = (customOpts && customOpts['ext']) || '.liquid'
+  const ext = (customOpts && customOpts.ext) || '.liquid'
 
   let template
   try {
     template = await liquid.getTemplate(fileName, opts)
   } catch (err) {
     try {
-      template = await liquid.getTemplate(camelToSnakeCase(fileName), opts)
+      template = await liquid.getTemplate(toKebabCase(fileName), opts)
     } catch (err) {
       try {
         template = await liquid.getTemplate(fileName + ext, opts)
       } catch (err) {
-        template = await liquid.getTemplate(camelToSnakeCase(fileName) + ext, opts)
+        template = await liquid.getTemplate(toKebabCase(fileName) + ext, opts)
       }
     }
   }
