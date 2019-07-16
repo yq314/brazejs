@@ -3,7 +3,7 @@ export default {
   'prepend': (v: string, arg: string) => arg + v,
   'capitalize': (str: string) => String(str).charAt(0).toUpperCase() + str.slice(1),
   'lstrip': (v: string) => String(v).replace(/^\s+/, ''),
-  'downcase': (v: string) => v.toLowerCase(),
+  'downcase': (v: string) => String(v).toLowerCase(),
   'upcase': (str: string) => String(str).toUpperCase(),
   'remove': (v: string, arg: string) => v.split(arg).join(''),
   'remove_first': (v: string, l: string) => v.replace(l, ''),
