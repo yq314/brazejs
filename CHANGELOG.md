@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/yq314/brazejs/compare/v1.1.2...v1.1.3) (2019-07-16)
+
+
+### Bug Fixes
+
+* searching content blocks filename in kebab-case ([6ebc1c0](https://github.com/yq314/brazejs/commit/6ebc1c0))
+
 ## [1.1.2](https://github.com/yq314/brazejs/compare/v1.1.1...v1.1.2) (2019-07-07)
 
 
