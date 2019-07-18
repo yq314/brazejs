@@ -121,6 +121,14 @@ function readProperty (obj: Scope, key: string) {
     if (obj.hasOwnProperty(key)) return obj[key]
     return obj.liquidMethodMissing(key)
   }
+
+  // Support Braze's operation
+  if (key === 'first' && _.isArray(obj)) {
+    return obj[0]
+  } else if (key === 'last' && _.isArray(obj)) {
+    return obj[obj.length - 1]
+  }
+
   return key === 'size' ? readSize(obj) : obj[key]
 }
 
