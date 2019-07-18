@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/yq314/brazejs/compare/v1.1.4...v1.1.5) (2019-07-18)
+
+
+### Bug Fixes
+
+* support output parsing in `if` and `connected-content` tag ([2288d4c](https://github.com/yq314/brazejs/commit/2288d4c))
+
 ## [1.1.4](https://github.com/yq314/brazejs/compare/v1.1.3...v1.1.4) (2019-07-16)
 
 
