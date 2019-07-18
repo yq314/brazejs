@@ -1,5 +1,5 @@
 import Liquid from '../../../../src/liquid'
-import {expect, use} from 'chai'
+import { expect, use } from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 
 use(chaiAsPromised)

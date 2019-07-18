@@ -39,7 +39,7 @@ export default {
       if (branch.cond.startsWith(ctx.opts.outputDelimiterLeft)) {
         parsedCond = await this.liquid.parseAndRender(branch.cond, ctx.getAll())
       } else {
-        parsedCond = await evalExp(branch.cond, ctx);
+        parsedCond = await evalExp(branch.cond, ctx)
       }
 
       if (isTruthy(parsedCond)) {
