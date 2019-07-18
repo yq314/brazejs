@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/yq314/brazejs/compare/v1.1.3...v1.1.4) (2019-07-16)
+
+
+### Bug Fixes
+
+* downcase will convert input to String first, and plus/minus will convert input to Number first ([7c91a1c](https://github.com/yq314/brazejs/commit/7c91a1c))
+
 ## [1.1.3](https://github.com/yq314/brazejs/compare/v1.1.2...v1.1.3) (2019-07-16)
 
 
