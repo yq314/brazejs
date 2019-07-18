@@ -35,8 +35,14 @@ export default {
 
   render: async function (ctx: Context) {
     for (const branch of this.branches) {
-      const cond = await evalExp(branch.cond, ctx)
-      if (isTruthy(cond)) {
+      let parsedCond
+      if (branch.cond.startsWith(ctx.opts.outputDelimiterLeft)) {
+        parsedCond = await this.liquid.parseAndRender(branch.cond, ctx.getAll())
+      } else {
+        parsedCond = await evalExp(branch.cond, ctx);
+      }
+
+      if (isTruthy(parsedCond)) {
         return this.liquid.renderer.renderTemplates(branch.templates, ctx)
       }
     }

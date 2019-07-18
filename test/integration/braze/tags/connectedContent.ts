@@ -39,6 +39,12 @@ describe('braze/tags/connected_content', function () {
     return expect(html).to.equal('Qing')
   })
 
+  it('should parse output in url', async function () {
+    const src = '{% connected_content http://localhost:8080/json/{{user_id | plus: 1}} %}{{connected.first_name}}'
+    const html = await liquid.parseAndRender(src, { 'user_id': '0' })
+    return expect(html).to.equal('Qing')
+  })
+
   it('should save to var', async function () {
     const src = '{% connected_content http://localhost:8080/json/1 :retry :save user %}' +
       '{{user.first_name}} {{user.__http_status_code__}}'

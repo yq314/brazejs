@@ -5,7 +5,7 @@ import ITagImplOptions from '../../template/tag/itag-impl-options'
 import * as rp_ from 'request-promise-cache'
 const rp = rp_
 
-const re = new RegExp(`(https?[^\\s]+)(\\s+.*)?$`)
+const re = new RegExp(`(https?(?:[^\\s\\{\\}]+|\\{\\{.*?\\}\\})+)(\\s+.*)?$`)
 
 // supported options: :basic_auth, :content_type, :save, :cache, :method, :body
 export default <ITagImplOptions>{

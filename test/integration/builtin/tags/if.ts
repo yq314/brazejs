@@ -1,5 +1,8 @@
 import Liquid from '../../../../src/liquid'
-import { expect } from 'chai'
+import {expect, use} from 'chai'
+import * as chaiAsPromised from 'chai-as-promised'
+
+use(chaiAsPromised)
 
 describe('tags/if', function () {
   const liquid = new Liquid()
@@ -108,6 +111,16 @@ describe('tags/if', function () {
       const src = '{% if 10 >= null %}yes{% else %}no{% endif %}'
       const html = await liquid.parseAndRender(src, ctx)
       return expect(html).to.equal('no')
+    })
+
+    it('should support variable value', async function () {
+      const src = '{% if {{a}} > 1 %}{{b}}{% else %}{{c}}{% endif %}'
+      const html = await liquid.parseAndRender(src, {
+        a: 2,
+        b: 'yes',
+        c: 'no'
+      })
+      return expect(html).to.equal('yes')
     })
   })
 })
