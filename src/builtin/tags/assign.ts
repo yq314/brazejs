@@ -5,6 +5,7 @@ import Context from '../../context/context'
 import ITagImplOptions from '../../template/tag/itag-impl-options'
 
 const re = new RegExp(`(${identifier.source})\\s*=\\s*([^]*)`)
+const closingOutputRe = new RegExp(`\\}\\}`, 'g')
 
 export default {
   parse: function (token: TagToken) {
@@ -15,7 +16,8 @@ export default {
   },
   render: async function (ctx: Context) {
     let parsedValue
-    if (this.value.startsWith(ctx.opts.outputDelimiterLeft)) {
+    const closingCount = (this.value.match(closingOutputRe) || []).length
+    if (this.value.startsWith(ctx.opts.outputDelimiterLeft) && closingCount === 1) {
       parsedValue = await this.liquid.parseAndRender(this.value, ctx.getAll())
     } else {
       parsedValue = await this.liquid.evalValue(this.value, ctx)

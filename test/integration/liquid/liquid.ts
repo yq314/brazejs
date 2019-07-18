@@ -45,7 +45,7 @@ describe('Liquid', function () {
     it('should support array operation in output', async function () {
       const src = '{{ arr.last.c }}{{ arr.first }}'
       const html = await engine.parseAndRender(src, {
-        arr: [1, 2, { c: 3}]
+        arr: [1, 2, { c: 3 }]
       })
       return expect(html).to.equal('31')
     })

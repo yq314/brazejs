@@ -94,6 +94,11 @@ async function parseValue (str: string | undefined, ctx: Context): Promise<any> 
     return ctx.get(match[2])
   }
 
+  // for Braze, strip {{ and }}
+  str = str
+    .replace(ctx.opts.outputDelimiterLeft, '')
+    .replace(ctx.opts.outputDelimiterRight, '')
+
   return ctx.get(str)
 }
 

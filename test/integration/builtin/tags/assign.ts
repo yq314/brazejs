@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import Liquid from '../../../../src/liquid'
 import { expect, use } from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
@@ -43,6 +44,16 @@ describe('tags/assign', function () {
     const src = '{% assign foo={{bar}} %}{{foo}}'
     const html = await liquid.parseAndRender(src, { bar: 'value_of_bar' })
     return expect(html).to.equal('value_of_bar')
+  })
+  it('should assign variable value in ${} format', async function () {
+    const src = '{% assign foo={{${bar}}} %}{{foo}}'
+    const html = await liquid.parseAndRender(src, { bar: 'value_of_bar' })
+    return expect(html).to.equal('value_of_bar')
+  })
+  it('should support variables in filter', async function () {
+    const src = '{% assign foo = {{a.b}} | replace: "bar", {{bar}} %}{{foo}}'
+    const html = await liquid.parseAndRender(src, { bar: 'baz', a: { b: 'test bar' } })
+    return expect(html).to.equal('test baz')
   })
   it('should support spaces around =', async function () {
     const src = '{% assign foo = {{bar}} %}{{foo}}'
