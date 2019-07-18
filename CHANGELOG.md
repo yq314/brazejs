@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/yq314/brazejs/compare/v1.1.5...v1.2.0) (2019-07-18)
+
+
+### Bug Fixes
+
+* fix assign tag to support output ([85d4646](https://github.com/yq314/brazejs/commit/85d4646))
+
+
+### Features
+
+* added support for `first` and `last` for values ([eb5b8c3](https://github.com/yq314/brazejs/commit/eb5b8c3))
+
 ## [1.1.5](https://github.com/yq314/brazejs/compare/v1.1.4...v1.1.5) (2019-07-18)
 
 
