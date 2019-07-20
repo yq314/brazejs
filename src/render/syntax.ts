@@ -1,7 +1,7 @@
 import * as lexical from '../parser/lexical'
 import assert from '../util/assert'
 import Context from '../context/context'
-import { range, last, isFunction } from '../util/underscore'
+import { range, last, isFunction, escapeRegExp } from '../util/underscore'
 import { isComparable } from '../drop/icomparable'
 import { NullDrop } from '../drop/null-drop'
 import { EmptyDrop } from '../drop/empty-drop'
@@ -87,17 +87,18 @@ async function parseValue (str: string | undefined, ctx: Context): Promise<any> 
   if (!isNaN(Number(str))) return Number(str)
   if ((str[0] === '"' || str[0] === "'") && str[0] === last(str)) return str.slice(1, -1)
 
+  // for Braze, strip {{ and }}
+  const re = new RegExp(
+    `${escapeRegExp(ctx.opts.outputDelimiterLeft)}\\s*(.*?)\\s*${escapeRegExp(ctx.opts.outputDelimiterRight)}`
+  )
+  str = str.replace(re, '$1')
+
   // extension for Braze attributes
   let match
   if ((match = str.match(lexical.attribute))) {
     if (match[1]) return ctx.get(`${match[1]}['${match[2]}']`)
     return ctx.get(match[2])
   }
-
-  // for Braze, strip {{ and }}
-  str = str
-    .replace(ctx.opts.outputDelimiterLeft, '')
-    .replace(ctx.opts.outputDelimiterRight, '')
 
   return ctx.get(str)
 }

@@ -13,7 +13,7 @@ export default {
     _.stringify(v).split(pattern).join(replacement),
   'replace_first': (v: string, arg1: string, arg2: string) => _.stringify(v).replace(arg1, arg2),
   'rstrip': (str: string) => _.stringify(str).replace(/\s+$/, ''),
-  'split': (v: string, arg: string) => _.stringify(v).split(arg),
+  'split': (v: string, arg: string) => _.stringify(v).replace(new RegExp(`(${_.escapeRegExp(arg)})+$`), '').split(arg),
   'strip': (v: string) => _.stringify(v).trim(),
   'strip_newlines': (v: string) => _.stringify(v).replace(/\n/g, ''),
   'truncate': (v: string, l: number = 50, o: string = '...') => {

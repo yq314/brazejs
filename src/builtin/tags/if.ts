@@ -1,12 +1,11 @@
 import { evalExp, isTruthy } from '../../render/syntax'
+import { escapeRegExp } from '../../util/underscore'
 import TagToken from '../../parser/tag-token'
 import Token from '../../parser/token'
 import Context from '../../context/context'
 import ITemplate from '../../template/itemplate'
 import ITagImplOptions from '../../template/tag/itag-impl-options'
 import ParseStream from '../../parser/parse-stream'
-
-const re = new RegExp(`\\{\\{\\s*(.*?)\\s*\\}\\}`)
 
 export default {
   parse: function (tagToken: TagToken, remainTokens: Token[]) {
@@ -36,6 +35,10 @@ export default {
   },
 
   render: async function (ctx: Context) {
+    const re = new RegExp(
+      `${escapeRegExp(ctx.opts.outputDelimiterLeft)}\\s*(.*?)\\s*${escapeRegExp(ctx.opts.outputDelimiterRight)}`
+    )
+
     for (const branch of this.branches) {
       const parsedCond = branch.cond.replace(re, '$1')
       const cond = await evalExp(parsedCond, ctx)

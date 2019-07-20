@@ -106,6 +106,9 @@ describe('filters/string', function () {
             '{% endfor %}',
     'John Paul George Ringo ')
   })
+  it('should ignore empty string at the end', function () {
+    return test('{% assign a = ",123,456,," | split: "," %}{{a}}', '["", "123", "456"]')
+  })
   it('should support strip', function () {
     return test('{{ "          So much room for activities!          " | strip }}',
       'So much room for activities!')

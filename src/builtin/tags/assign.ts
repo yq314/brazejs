@@ -5,7 +5,6 @@ import Context from '../../context/context'
 import ITagImplOptions from '../../template/tag/itag-impl-options'
 
 const re = new RegExp(`(${identifier.source})\\s*=\\s*([^]*)`)
-const closingOutputRe = new RegExp(`\\}\\}`, 'g')
 
 export default {
   parse: function (token: TagToken) {
@@ -13,15 +12,12 @@ export default {
     assert(match, `illegal token ${token.raw}`)
     this.key = match[1]
     this.value = match[2]
+    this.token = token
   },
   render: async function (ctx: Context) {
-    let parsedValue
-    const closingCount = (this.value.match(closingOutputRe) || []).length
-    if (this.value.startsWith(ctx.opts.outputDelimiterLeft) && closingCount === 1) {
-      parsedValue = await this.liquid.parseAndRender(this.value, ctx.getAll())
-    } else {
-      parsedValue = await this.liquid.evalValue(this.value, ctx)
-    }
-    ctx.front()[this.key] = parsedValue
+    const value = this.value
+      .replace(ctx.opts.outputDelimiterLeft, '')
+      .replace(ctx.opts.outputDelimiterRight, '')
+    ctx.front()[this.key] = await this.liquid.evalValue(value, ctx)
   }
 } as ITagImplOptions

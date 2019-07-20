@@ -1,5 +1,29 @@
 const toStr = Object.prototype.toString
 
+const specials = [
+  '-',
+  '[',
+  ']',
+  '/',
+  '{',
+  '}',
+  '(',
+  ')',
+  '*',
+  '+',
+  '?',
+  '.',
+  '\\',
+  '^',
+  '$',
+  '|'
+]
+const regex = RegExp('[' + specials.join('\\') + ']', 'g')
+
+export function escapeRegExp (str: string) {
+  return str.replace(regex, '\\$&')
+}
+
 /*
  * Checks if value is classified as a String primitive or object.
  * @param {any} value The value to check.

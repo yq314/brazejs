@@ -55,10 +55,25 @@ describe('tags/assign', function () {
     const html = await liquid.parseAndRender(src, { bar: 'baz', a: { b: 'test bar' } })
     return expect(html).to.equal('test baz')
   })
+  it('should support object in variable', async function () {
+    const src = '{% assign foo = {{a}} %}{{foo.b}}'
+    const html = await liquid.parseAndRender(src, { a: { b: 'test' } })
+    return expect(html).to.equal('test')
+  })
+  it('should support variable with filter', async function () {
+    const src = '{% assign foo = {{a | slice: 0, 2 }} %}{{foo}}'
+    const html = await liquid.parseAndRender(src, { a: [1, 2, 3] })
+    return expect(html).to.equal('[1, 2]')
+  })
   it('should support spaces around =', async function () {
     const src = '{% assign foo = {{bar}} %}{{foo}}'
     const html = await liquid.parseAndRender(src, { bar: 'value_of_bar' })
     return expect(html).to.equal('value_of_bar')
+  })
+  it('should support variable and filter', async function () {
+    const src = '{% assign foo = {{bar}} | split: "|" %}{{foo}}'
+    const html = await liquid.parseAndRender(src, { bar: '123|' })
+    return expect(html).to.equal('["123"]')
   })
   it('should assign var-1', async function () {
     const src = '{% assign var-1 = 5 %}{{ var-1 }}'
