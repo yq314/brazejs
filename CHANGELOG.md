@@ -1,3 +1,13 @@
+## [1.2.1](https://github.com/yq314/brazejs/compare/v1.2.0...v1.2.1) (2019-07-20)
+
+
+### Bug Fixes
+
+* further improve rendering for if and assign tag ([81924f8](https://github.com/yq314/brazejs/commit/81924f8))
+* improve if condition tag ([6c5ef6c](https://github.com/yq314/brazejs/commit/6c5ef6c))
+* make date filter working with UTC by default and add support for more formats ([103f2ad](https://github.com/yq314/brazejs/commit/103f2ad))
+* make stringify closer to braze output ([6e6e9ce](https://github.com/yq314/brazejs/commit/6e6e9ce))
+
 # [1.2.0](https://github.com/yq314/brazejs/compare/v1.1.5...v1.2.0) (2019-07-18)
 
 
