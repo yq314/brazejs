@@ -122,5 +122,37 @@ describe('tags/if', function () {
       })
       return expect(html).to.equal('yes')
     })
+
+    it('should check falsy correctly', async function () {
+      const src = '{% if {{a}} %}{{x}}{% endif %}{% if {{b}} %}{{y}}{% endif %}{% if {{c}} %}{{z}}{% endif %}'
+      const html = await liquid.parseAndRender(src, {
+        a: '',
+        b: [],
+        x: 'x',
+        y: 'y',
+        z: 'z'
+      })
+      return expect(html).to.equal('xy')
+    })
+
+    it('should strictly compare with true', async function () {
+      const src = '{% if {{a}} == true %}{{x}}{% endif %}{% if {{b}} == true %}{{y}}{% endif %}'
+      const html = await liquid.parseAndRender(src, {
+        a: true,
+        x: 'x',
+        y: 'y'
+      })
+      return expect(html).to.equal('x')
+    })
+
+    it('should strictly compare with false', async function () {
+      const src = '{% if {{a}} == false %}{{x}}{% endif %}{% if {{b}} == false %}{{y}}{% endif %}'
+      const html = await liquid.parseAndRender(src, {
+        a: false,
+        x: 'x',
+        y: 'y'
+      })
+      return expect(html).to.equal('x')
+    })
   })
 })

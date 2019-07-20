@@ -6,6 +6,8 @@ import ITemplate from '../../template/itemplate'
 import ITagImplOptions from '../../template/tag/itag-impl-options'
 import ParseStream from '../../parser/parse-stream'
 
+const re = new RegExp(`\\{\\{\\s*(.*?)\\s*\\}\\}`)
+
 export default {
   parse: function (tagToken: TagToken, remainTokens: Token[]) {
     this.branches = []
@@ -35,14 +37,9 @@ export default {
 
   render: async function (ctx: Context) {
     for (const branch of this.branches) {
-      let parsedCond
-      if (branch.cond.startsWith(ctx.opts.outputDelimiterLeft)) {
-        parsedCond = await this.liquid.parseAndRender(branch.cond, ctx.getAll())
-      } else {
-        parsedCond = await evalExp(branch.cond, ctx)
-      }
-
-      if (isTruthy(parsedCond)) {
+      const parsedCond = branch.cond.replace(re, '$1')
+      const cond = await evalExp(parsedCond, ctx)
+      if (isTruthy(cond)) {
         return this.liquid.renderer.renderTemplates(branch.templates, ctx)
       }
     }
