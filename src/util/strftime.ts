@@ -74,13 +74,16 @@ const formatCodes = {
     return monthNames[d.getMonth()]
   },
   c: function (d: Date) {
-    return d.toLocaleString()
+    return convert(d, '%a %b %e %T %Y')
   },
   C: function (d: Date) {
     return _date.century(d)
   },
   d: function (d: Date) {
     return padStart(d.getDate(), 2, '0')
+  },
+  D: function (d: Date) {
+    return convert(d, '%m/%d/%y')
   },
   e: function (d: Date) {
     return padStart(d.getDate(), 2)
@@ -118,11 +121,20 @@ const formatCodes = {
   q: function (d: Date) {
     return _date.getSuffix(d)
   },
+  r: function (d: Date) {
+    return convert(d, '%I:%M:%S %p')
+  },
+  R: function (d: Date) {
+    return convert(d, '%H:%M')
+  },
   s: function (d: Date) {
-    return Math.round(d.valueOf() / 1000)
+    return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()) / 1000;
   },
   S: function (d: Date) {
     return padStart(d.getSeconds(), 2, '0')
+  },
+  T: function (d: Date) {
+    return convert(d, '%H:%M:%S')
   },
   u: function (d: Date) {
     return d.getDay() || 7
@@ -137,10 +149,10 @@ const formatCodes = {
     return _date.getWeekOfYear(d, 1)
   },
   x: function (d: Date) {
-    return d.toLocaleDateString()
+    return convert(d, '%m/%d/%y')
   },
   X: function (d: Date) {
-    return d.toLocaleTimeString()
+    return convert(d, '%H:%M:%S')
   },
   y: function (d: Date) {
     return d.getFullYear().toString().substring(2, 4)
@@ -159,7 +171,7 @@ const formatCodes = {
 (formatCodes as any).h = formatCodes.b;
 (formatCodes as any).N = formatCodes.L
 
-export default function (d: Date, format: string) {
+function convert (d: Date, format: string) {
   let output = ''
   let remaining = format
 
@@ -182,3 +194,5 @@ export default function (d: Date, format: string) {
     output += func ? func(d) : '%' + ch
   }
 }
+
+export default convert
