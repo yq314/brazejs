@@ -31,17 +31,27 @@ describe('util/underscore', function () {
     it('should return "" for undefined', function () {
       expect(_.stringify(undefined)).to.equal('')
     })
-    it('should return JSON for object', function () {
-      expect(_.stringify({ a: 'b' })).to.equal('{"a":"b"}')
+    it('should return Ruby presentation of object', function () {
+      expect(_.stringify({ a: 'b', c: 'd' })).to.equal('{"a"=>"b", "c"=>"d"}')
     })
-    it('should return regex string for RegExp', function () {
-      const reg = /foo/g
-      expect(_.stringify(reg)).to.equal('/foo/g')
+    it('should return Ruby presentation of array', function () {
+      expect(_.stringify([1, 2, '3'])).to.equal('[1, 2, "3"]')
     })
-    it('should return locale string for date', function () {
-      const date = new Date('2018-10-01T14:51:00.000Z')
-      // Mon Oct 01 2018 22:51:00 GMT+0800 (CST)
-      expect(_.stringify(date)).to.equal(date.toString())
+    it('should support nested object', function () {
+      const obj = [{
+        l: [1, 2],
+        s: 'string',
+        o: {
+          a: ['a', 'b'],
+          b: {
+            c: 123,
+            d: '123'
+          }
+        }
+      }]
+      expect(_.stringify(obj)).to.equal(
+        '[{"l"=>[1, 2], "s"=>"string", "o"=>{"a"=>["a", "b"], "b"=>{"c"=>123, "d"=>"123"}}}]'
+      )
     })
   })
   describe('.forOwn()', function () {

@@ -28,7 +28,10 @@ describe('util/strftime', function () {
     expect(t(now, '%C')).to.equal('20')
   })
   it('should format %c as local string', function () {
-    expect(t(now, '%c')).to.equal(now.toLocaleString())
+    expect(t(now, '%c')).to.equal('Mon Jan 4 13:15:23 2016')
+  })
+  it('should format %D to %m/%d/%y', function () {
+    expect(t(now, '%D')).to.equal('01/04/16')
   })
   it('should format %e as space padded date', function () {
     expect(t(now, '%e')).to.equal(' 4')
@@ -83,6 +86,12 @@ describe('util/strftime', function () {
     expect(t(rd, '%q')).to.equal('rd')
     expect(t(now, '%q')).to.equal('th')
   })
+  it('should format %r as %I:%M:%S %p', function () {
+    expect(t(now, '%r')).to.be.equal('01:15:23 PM')
+  })
+  it('should format %R as %H:%M', function () {
+    expect(t(now, '%R')).to.be.equal('13:15')
+  })
   it('should format %s as UNIX seconds', function () {
     expect(t(now, '%s')).to.be.match(/\d+/)
   })
@@ -101,10 +110,10 @@ describe('util/strftime', function () {
     expect(t(now, '%W')).to.be.equal('01')
   })
   it('should format %x as local date string', function () {
-    expect(t(now, '%x')).to.equal(now.toLocaleDateString())
+    expect(t(now, '%x')).to.equal('01/04/16')
   })
   it('should format %X as local time string', function () {
-    expect(t(now, '%X')).to.equal(now.toLocaleTimeString())
+    expect(t(now, '%X')).to.equal('13:15:23')
   })
   it('should format %y as 2-digit year', function () {
     expect(t(now, '%y')).to.equal('16')
@@ -122,6 +131,9 @@ describe('util/strftime', function () {
   })
   it('should retain un-recognized formaters', function () {
     expect(t(now, '%o')).to.equal('%o')
+  })
+  it('should remove consecutive spaces', function () {
+    expect(t(now, '%Y  A   B    C')).to.equal('2016 A B C')
   })
 })
 

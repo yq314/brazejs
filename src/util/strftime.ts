@@ -128,7 +128,7 @@ const formatCodes = {
     return convert(d, '%H:%M')
   },
   s: function (d: Date) {
-    return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()) / 1000;
+    return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()) / 1000
   },
   S: function (d: Date) {
     return padStart(d.getSeconds(), 2, '0')
@@ -181,7 +181,7 @@ function convert (d: Date, format: string) {
 
     // No more format codes. Add the remaining text and return
     if (!results) {
-      return output + remaining
+      return (output + remaining).replace(/\s+/g, ' ')
     }
 
     // Add the preceding text

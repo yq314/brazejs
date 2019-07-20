@@ -11,7 +11,7 @@ describe('filters/date', function () {
     return test('{{ "foo" | date: "%Y"}}', 'foo')
   })
   it('should render object as string if not valid', function () {
-    return test('{{ obj | date: "%Y"}}', '{"foo":"bar"}')
+    return test('{{ obj | date: "%Y"}}', '{"foo"=>"bar"}')
   })
   it('should convert to epoch timestamp', function () {
     return test('{{ "2019-05-18T10:30:00" | date: "%s" }}', '1558175400')

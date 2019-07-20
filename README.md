@@ -103,9 +103,9 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         {{ ${first_name} }}
         {{ custom_attribute.${attr1} }}
         ```
-    * Object will be converted by `JSON.stringify()`
+    * Object will be converted to Ruby presentation
     
-        If context is `{ "obj": {"foo": "bar"} }`, [liquidjs][liquidjs] renders to `[object Object]`, while brazejs renders it to `{"foo":"bar"}`
+        If context is `{ "obj": {"foo": "bar"} }`, [liquidjs][liquidjs] renders to `[object Object]`, while brazejs renders it to `{"foo"=>"bar"}`
 
 * #### Content blocks
     * [Content Blocks](https://www.braze.com/docs/user_guide/engagement_tools/templates_and_media/content_blocks/) is supported

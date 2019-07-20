@@ -28,8 +28,23 @@ export function promisify (fn: any) {
 export function stringify (value: any): string {
   if (isNil(value)) return ''
   value = toLiquid(value)
-  const str = String(value)
-  return str === '[object Object]' ? JSON.stringify(value) : str
+
+  if (isArray(value)) {
+    const str = value.map(v => toValueStr(v)).join(', ')
+    return `[${str}]`
+  }
+
+  if (isObject(value)) {
+    const str = Object.keys(value).map(k => `"${k}"=>${toValueStr(value[k])}`).join(', ')
+    return `{${str}}`
+  }
+
+  return String(value)
+}
+
+function toValueStr (value: any): string {
+  if (isString(value)) return `"${value}"`
+  return stringify(value)
 }
 
 export function toLiquid (value: any): any {

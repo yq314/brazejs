@@ -15,7 +15,7 @@ export default {
   }
 }
 
-function toUTCDate(date: Date): Date {
+function toUTCDate (date: Date): Date {
   return new Date(
     date.getUTCFullYear(),
     date.getUTCMonth(),
