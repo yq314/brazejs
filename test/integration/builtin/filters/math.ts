@@ -27,6 +27,7 @@ describe('filters/math', function () {
       () => test('{{ 183.357 | minus: 12 }}', '171.357'))
     it('should convert first arg as number', () => test('{{ "4" | minus: 1 }}', '3'))
     it('should convert both args as number', () => test('{{ "4" | minus: "1" }}', '3'))
+    it('should convert undefined to 0', () => test('{{ a | minus: 1 }}', '-1'))
   })
   describe('modulo', function () {
     it('should return "1" for 3,2', () => test('{{ 3 | modulo: 2 }}', '1'))
@@ -44,6 +45,7 @@ describe('filters/math', function () {
       () => test('{{ 183.357 | plus: 12 }}', '195.357'))
     it('should convert first arg as number', () => test('{{ "4" | plus: 2 }}', '6'))
     it('should convert both args as number', () => test('{{ "4" | plus: "2" }}', '6'))
+    it('should convert undefined to 0', () => test('{{ a | plus: 1 }}', '1'))
   })
   describe('round', function () {
     it('should return "1" for 1.2', () => test('{{1.2|round}}', '1'))
