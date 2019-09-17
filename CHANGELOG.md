@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/yq314/brazejs/compare/v1.2.1...v1.2.2) (2019-09-17)
+
+
+### Bug Fixes
+
+* convert undefined to 0 for math operations ([6fbe4b7](https://github.com/yq314/brazejs/commit/6fbe4b7))
+
 ## [1.2.1](https://github.com/yq314/brazejs/compare/v1.2.0...v1.2.1) (2019-07-20)
 
 
