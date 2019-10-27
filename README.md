@@ -161,3 +161,8 @@ Below Braze supported [filters][braze/filters] are yet to be added:
 [braze/property_accessor]: https://www.braze.com/docs/user_guide/personalization_and_dynamic_content/liquid/advanced_filters/#property-accessor-filter
 [braze/abort_message]: https://www.braze.com/docs/user_guide/personalization_and_dynamic_content/liquid/aborting_messages/
 [braze/connected_content]: https://www.braze.com/docs/user_guide/personalization_and_dynamic_content/connected_content/making_an_api_call/#making-an-api-call
+
+#### Use cases
+
+* Together with [differencify](https://github.com/NimaSoroush/differencify) to do visual test for your Braze templates
+* Use in [VSCode Extension](https://github.com/yq314/vscode-braze-liquid-preview) for easier local development
