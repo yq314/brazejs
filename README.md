@@ -33,24 +33,38 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
 #### Added
 
 * #### Filters
-    * [property_accessor][braze/property_accessor]: access value from hash
+
+    * Encoding
+
+        | Filter Name | Example | Notes |
+        | --- | --- | --- |
+        | md5 | `{{"sample" \| md5}}` | |
+        | sha1 | `{{"strings" \| sha1}}` | |
+        | sha2 | `{{"to" \| sha2}}` | This is using SHA-256 |
+        | hmac_sha1 | `{{"be" \| hmac_sha1}}` | |
+        | base64 | `{{"encoded" \| base64}}` | |
         
-        Example:
-        ```
-        {{ hash | property_accessor: 'key' }}
-        ```
+
+    * URL 
+
+        | Filter Name | Example | Notes |
+        | --- | --- | --- |
+        | url_escape | `'{{"hey<>hi" \| url_escape}}'` | ⚠️ this uses `encodeURI` which is slightly different from Braze's implementation |
+        | url_param_escape | `'{{"hey<>hi" \| url_param_escape}}'` | ⚠️ this uses `encodeURIComponent` which is slightly different from Braze's implementation |
+
+    * [Property Accessor][braze/property_accessor]
+
+        | Filter Name | Example | Notes |
+        | --- | --- | --- |
+        | property_accessor | `{{hash \| property_accessor: 'key'}}` | Example hash: `{ 'key' => 'hello' }` | |
         
-    * url_escape
+    * JSON Escape
+
+        | Filter Name | Example | Notes |
+        | --- | --- | --- |
+        | json_escape | `{{'123"456' \| json_escape}}` | ⚠️ this uses `JSON.stringify` which is slightly different from Braze's implementation |
     
-        ⚠️ this uses `encodeURI` which is slightly different from Braze's implementation
-    
-    * url_param_escape
-    
-        ⚠️ this uses `encodeURIComponent` which is slightly different from Braze's implementation
-    
-    * json_escape
-    
-        ⚠️ this uses `JSON.stringify` which is slightly different from Braze's implementation
+        
         
 * #### Tags
     * [abort_message][braze/abort_message]: abort rendering and output an optional message
@@ -141,13 +155,6 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         
 #### TBD
 Below Braze supported [filters][braze/filters] are yet to be added:
-
-* #### Encoding filters
-    * md5
-    * sha1
-    * sha2
-    * base64
-    * hmac_sha1
 
 * #### Number formatting filters
     * number_with_delimiter
