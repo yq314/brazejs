@@ -49,15 +49,21 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
 
         | Filter Name | Example | Notes |
         | --- | --- | --- |
-        | url_escape | `'{{"hey<>hi" \| url_escape}}'` | ⚠️ this uses `encodeURI` which is slightly different from Braze's implementation |
-        | url_param_escape | `'{{"hey<>hi" \| url_param_escape}}'` | ⚠️ this uses `encodeURIComponent` which is slightly different from Braze's implementation |
+        | url_escape | `{{"hey<>hi" \| url_escape}}` | ⚠️ this uses `encodeURI` which is slightly different from Braze's implementation |
+        | url_param_escape | `{{"hey<>hi" \| url_param_escape}}` | ⚠️ this uses `encodeURIComponent` which is slightly different from Braze's implementation |
 
     * [Property Accessor][braze/property_accessor]
 
         | Filter Name | Example | Notes |
         | --- | --- | --- |
-        | property_accessor | `{{hash \| property_accessor: 'key'}}` | Example hash: `{ 'key' => 'hello' }` | |
+        | property_accessor | `{{hash \| property_accessor: 'key'}}` | Example hash: `{ 'key' => 'hello' }` |
         
+    * Number Formatting
+
+        | Filter Name | Example | Notes |
+        | --- | --- | --- |
+        | number_with_delimiter | `{{123456 \| number_with_delimiter}}` | ⚠️ this uses `toLocaleString` which is slightly different from Braze's implementation |
+
     * JSON Escape
 
         | Filter Name | Example | Notes |
@@ -151,13 +157,6 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
             }
         
         ⚠️ At time of writing, Braze only support nesting 2 levels of content blocks
-
-        
-#### TBD
-Below Braze supported [filters][braze/filters] are yet to be added:
-
-* #### Number formatting filters
-    * number_with_delimiter
 
 [braze/liquid]: https://www.braze.com/docs/user_guide/personalization_and_dynamic_content/liquid/overview/
 [tutorial]: https://shopify.github.io/liquid/basics/introduction/
