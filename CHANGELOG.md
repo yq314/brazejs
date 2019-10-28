@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/yq314/brazejs/compare/v1.2.2...v1.3.0) (2019-10-28)
+
+
+### Features
+
+* Add Braze encoding filters and update readme ([6ca4827](https://github.com/yq314/brazejs/commit/6ca4827))
+
 ## [1.2.2](https://github.com/yq314/brazejs/compare/v1.2.1...v1.2.2) (2019-09-17)
 
 
