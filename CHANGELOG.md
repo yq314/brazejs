@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/yq314/brazejs/compare/v1.3.0...v1.4.0) (2019-10-29)
+
+
+### Features
+
+* add number format filter and update readme ([1a29f34](https://github.com/yq314/brazejs/commit/1a29f34))
+
 # [1.3.0](https://github.com/yq314/brazejs/compare/v1.2.2...v1.3.0) (2019-10-28)
 
 
