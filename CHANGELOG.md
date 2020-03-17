@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/yq314/brazejs/compare/v1.4.0...v1.5.0) (2020-03-17)
+
+
+### Features
+
+* **content blocks:** support multiple roots for content blocks ([5e6f09e](https://github.com/yq314/brazejs/commit/5e6f09e))
+
 # [1.4.0](https://github.com/yq314/brazejs/compare/v1.3.0...v1.4.0) (2019-10-29)
 
 
