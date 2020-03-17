@@ -1,3 +1,4 @@
+import * as _ from '../../util/underscore'
 import TagToken from '../../parser/tag-token'
 import { attribute } from '../../parser/lexical'
 import Context from '../../context/context'
@@ -19,12 +20,11 @@ const renderContentBlocks = async function (liquid: Liquid, ctx: Context, fileNa
   const root = ctx.opts.root.slice(0)
   if (root.length === 1) {
     const base = root[0]
-
-    if (customOpts && customOpts.root) {
-      opts['root'] = resolve(base, customOpts.root)
-    } else {
-      opts['root'] = ['./content_blocks', '../content_blocks'].map(p => resolve(base, p))
-    }
+    let roots = ['./content_blocks', '../content_blocks'];
+    if (customOpts && customOpts.root && customOpts.root.length > 0)
+      roots = _.isString(customOpts.root) ? [customOpts.root] : customOpts.root
+    
+    opts['root'] = roots.map(p => resolve(base, p));
   }
 
   const ext = (customOpts && customOpts.ext) || '.liquid'

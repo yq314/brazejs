@@ -146,6 +146,21 @@ describe('braze/tags/content_blocks', function () {
     return expect(html).to.equal('foobar')
   })
 
+  it('should support content blocks in multiple dirs', async function () {
+    mock({
+      './current.liquid': 'foo{{content_blocks.${content_block}}}{{content_blocks.${content_block2}}}',
+      '/dir/content_block.html': 'bar',
+      '/dir2/content_block2.html': 'baz'
+    })
+    const html = await liquid.renderFile('./current.liquid', {
+      '__contentBlocks': {
+        root: ['/dir', '/dir2'],
+        ext: '.html'
+      }
+    })
+    return expect(html).to.equal('foobarbaz')
+  })
+
   it('should support nested content blocks', async function () {
     mock({
       './current.liquid': 'foo{{content_blocks.${content_block}}}',
