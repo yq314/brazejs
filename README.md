@@ -155,6 +155,16 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
                     "ext": ".html"
                 }
             }
+            
+        If your content blocks are in more than one roots, you can set an array as the root. 
+        Please make sure you give your content blocks different names, otherwise only the first matching content block will be used.
+        
+            {
+                "__contentBlocks": {
+                    "root": ["path1", "path2"],
+                    "ext": ".html"
+                }
+            }
         
         ⚠️ At time of writing, Braze only support nesting 2 levels of content blocks
 
