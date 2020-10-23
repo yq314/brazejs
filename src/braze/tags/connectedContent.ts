@@ -7,7 +7,7 @@ const rp = rp_
 
 const re = new RegExp(`(https?(?:[^\\s\\{\\}]+|\\{\\{.*?\\}\\})+)(\\s+.*)?$`)
 
-// supported options: :basic_auth, :content_type, :save, :cache, :method, :body
+// supported options: :basic_auth, :content_type, :save, :cache, :method, :body, :headers
 export default <ITagImplOptions>{
   parse: function (tagToken: TagToken) {
     const match = tagToken.args.match(re)
@@ -18,11 +18,11 @@ export default <ITagImplOptions>{
     const options = match[2]
     this.options = {}
     if (options) {
-      options.split(/\s*:/).forEach((optStr) => {
+      options.split(/\s+:/).forEach((optStr) => {
         if (optStr === '') return
 
         const opts = optStr.split(/\s+/)
-        this.options[opts[0]] = opts.length > 1 ? opts[1] : true
+        this.options[opts[0]] = opts.length > 1 ? opts.slice(1).join(" ") : true;
       })
     }
   },
@@ -49,14 +49,25 @@ export default <ITagImplOptions>{
       contentType = this.options.content_type || 'application/x-www-form-urlencoded'
     }
 
+    let headers = {
+      'User-Agent': 'brazejs-client',
+      'Content-Type': contentType,
+      'Accept': this.options.content_type
+    }
+    if( this.options.headers ) {
+      // Add specified headers to the headers
+      Object.keys(JSON.parse(this.options.headers)).forEach( key => {
+        // but not if they are already specified
+        if( !headers[key] ) {
+          headers[key] = this.options[key];
+        }
+      })
+    }
+
     const rpOption = {
       'resolveWithFullResponse': true,
       method,
-      headers: {
-        'User-Agent': 'brazejs-client',
-        'Content-Type': contentType,
-        'Accept': this.options.content_type
-      },
+      headers,
       body: this.options.body,
       uri: renderedUrl,
       cacheKey: renderedUrl,

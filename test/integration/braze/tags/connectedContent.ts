@@ -255,4 +255,32 @@ describe('braze/tags/connected_content', function () {
       expect(html2).to.equal('')
     })
   })
+
+  describe("headers should be pulled correctly", async function() {
+    
+    beforeEach(function () {
+      nock('http://localhost:8080', {
+      reqheaders: {
+        'User-Agent': 'brazejs-client',
+        'testHeader': 'headerValue'
+      }
+    })
+      .get('/headertest')
+      .reply(200, { success: true })
+      .persist()
+    })
+
+    it('should not pull incorrect (already existing) header from connected content block', async function () {
+      const src = '{% connected_content http://localhost:8080/headertest :headers { "User-Agent": "someOtherAgent", "testHeader": "headerValue" } :method post %}'
+      const html = await liquid.parseAndRender(src)
+      expect(html).to.equal('')
+    })
+
+    it('should pull correct header from connected content block', async function() {
+      const src = '{% connected_content http://localhost:8080/headertest :headers { "testHeader": "headerValue" } %}'
+      const html = await liquid.parseAndRender(src)
+      expect(html).to.equal('{ success: true }')
+    })
+    
+  })
 })
