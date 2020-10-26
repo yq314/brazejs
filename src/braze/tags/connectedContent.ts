@@ -24,12 +24,14 @@ export default <ITagImplOptions>{
       const headersMatch = options.match(headerRegex)
       if( headersMatch != null ) {
         this.options.headers = JSON.parse(headersMatch[1])
-        console.log(headersMatch[1])
       }
       options.replace(headerRegex, '').split(/\s+:/).forEach((optStr) => {
         if (optStr === '') return
 
         const opts = optStr.split(/\s+/)
+        if( opts[0] === "headers" ) {
+          console.log("Headers JSON malformed. Check your headers value")
+        }
         this.options[opts[0]] = opts.length > 1 ? opts[1] : true;
       })
     }
@@ -65,10 +67,8 @@ export default <ITagImplOptions>{
     if( this.options.headers ) {
       // Add specified headers to the headers
       Object.keys(this.options.headers).forEach( key => {
-        console.log(key)
         headers[key] = this.options.headers[key];
       })
-      console.log(headers)
     }
 
     const rpOption = {
