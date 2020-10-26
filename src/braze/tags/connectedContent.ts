@@ -3,9 +3,11 @@ import Context from '../../context/context'
 import ITagImplOptions from '../../template/tag/itag-impl-options'
 // @ts-ignore
 import * as rp_ from 'request-promise-cache'
+import { OperationCanceledException } from 'typescript'
 const rp = rp_
 
-const re = new RegExp(`(https?(?:[^\\s\\{\\}]+|\\{\\{.*?\\}\\})+)(\\s+.*)?$`)
+const re = new RegExp(`(https?(?:[^\\s\\{\\}]+|\\{\\{.*?\\}\\})+)(\\s+(\\s|.)*)?$`)
+const headerRegex = new RegExp(`:headers\\s+(\\{(.|\\s)*?\\})`)
 
 // supported options: :basic_auth, :content_type, :save, :cache, :method, :body, :headers
 export default <ITagImplOptions>{
@@ -18,11 +20,17 @@ export default <ITagImplOptions>{
     const options = match[2]
     this.options = {}
     if (options) {
-      options.split(/\s+:/).forEach((optStr) => {
+      // first extract the headers option if it exists, because the headers JSON may contain a /\s+:/
+      const headersMatch = options.match(headerRegex)
+      if( headersMatch != null ) {
+        this.options.headers = JSON.parse(headersMatch[1])
+        console.log(headersMatch[1])
+      }
+      options.replace(headerRegex, '').split(/\s+:/).forEach((optStr) => {
         if (optStr === '') return
 
         const opts = optStr.split(/\s+/)
-        this.options[opts[0]] = opts.length > 1 ? opts.slice(1).join(" ") : true;
+        this.options[opts[0]] = opts.length > 1 ? opts[1] : true;
       })
     }
   },
@@ -49,19 +57,18 @@ export default <ITagImplOptions>{
       contentType = this.options.content_type || 'application/x-www-form-urlencoded'
     }
 
-    let headers = {
+    const headers = {
       'User-Agent': 'brazejs-client',
       'Content-Type': contentType,
       'Accept': this.options.content_type
     }
     if( this.options.headers ) {
       // Add specified headers to the headers
-      Object.keys(JSON.parse(this.options.headers)).forEach( key => {
-        // but not if they are already specified
-        if( !headers[key] ) {
-          headers[key] = this.options[key];
-        }
+      Object.keys(this.options.headers).forEach( key => {
+        console.log(key)
+        headers[key] = this.options.headers[key];
       })
+      console.log(headers)
     }
 
     const rpOption = {
