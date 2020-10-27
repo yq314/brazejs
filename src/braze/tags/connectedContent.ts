@@ -7,7 +7,7 @@ import { OperationCanceledException } from 'typescript'
 const rp = rp_
 
 const re = new RegExp(`(https?(?:[^\\s\\{\\}]+|\\{\\{.*?\\}\\})+)(\\s+(\\s|.)*)?$`)
-const headerRegex = new RegExp(`:headers\\s+(\\{(.|\\s)*?\\})`)
+const headerRegex = new RegExp(`:headers\\s+(\\{(.|\\s)*?[^\\}]\\}([^\\}]|$))`)
 
 // supported options: :basic_auth, :content_type, :save, :cache, :method, :body, :headers
 export default <ITagImplOptions>{
@@ -66,16 +66,29 @@ export default <ITagImplOptions>{
     }
     if( this.options.headers ) {
       // Add specified headers to the headers
-      Object.keys(this.options.headers).forEach( key => {
-        headers[key] = this.options.headers[key];
-      })
+      const keys = Object.keys(this.options.headers);
+      for(let i = 0; i < keys.length; i++ ) {
+        let key = keys[i];
+        if( this.options.headers[key] ) {
+          headers[key] = await this.liquid.parseAndRender(this.options.headers[key], ctx.getAll())
+        } 
+      }
     }
 
+    console.log(ctx.getAll())
+
+    let body = undefined
+    if( this.options.body ) {
+      body = (await this.liquid.parseAndRender(this.options.body, ctx.getAll())).replace(/(?:\r\n|\r|\n|)/g, '')
+    }
+    console.log(this.options.headers)
+    console.log(headers)
+    console.log(body)
     const rpOption = {
       'resolveWithFullResponse': true,
       method,
       headers,
-      body: this.options.body,
+      body,
       uri: renderedUrl,
       cacheKey: renderedUrl,
       cacheTTL,
@@ -111,6 +124,7 @@ export default <ITagImplOptions>{
 
     try {
       const jsonRes = JSON.parse(res.body)
+      console.log(jsonRes)
       if (Object.prototype.toString.call(jsonRes) === '[object Object]') {
         jsonRes.__http_status_code__ = res.statusCode
       }
