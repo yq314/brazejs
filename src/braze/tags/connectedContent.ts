@@ -20,17 +20,18 @@ export default <ITagImplOptions>{
     const options = match[2]
     this.options = {}
     if (options) {
-      // first extract the headers option if it exists, because the headers JSON may contain a /\s+:/
+      // first extract the headers option if it exists, because the headers JSON will contain a /\s+:/
       const headersMatch = options.match(headerRegex)
       if( headersMatch != null ) {
         this.options.headers = JSON.parse(headersMatch[1])
       }
+      // then replace the headers option if it exists, and proceed as normal for the other options
       options.replace(headerRegex, '').split(/\s+:/).forEach((optStr) => {
         if (optStr === '') return
 
         const opts = optStr.split(/\s+/)
         if( opts[0] === "headers" ) {
-          console.log("Headers JSON malformed. Check your headers value")
+          console.error("Headers JSON malformed. Check your headers value")
         }
         this.options[opts[0]] = opts.length > 1 ? opts[1] : true;
       })
@@ -38,7 +39,6 @@ export default <ITagImplOptions>{
   },
   render: async function (ctx: Context) {
     const renderedUrl = await this.liquid.parseAndRender(this.url, ctx.getAll())
-    console.log(`rendered url is ${renderedUrl}`)
 
     const method = (this.options.method || 'GET').toUpperCase()
     let cacheTTL = 300 * 1000 // default 5 mins
@@ -66,24 +66,16 @@ export default <ITagImplOptions>{
     }
     if( this.options.headers ) {
       // Add specified headers to the headers
-      const keys = Object.keys(this.options.headers);
-      for(let i = 0; i < keys.length; i++ ) {
-        let key = keys[i];
-        if( this.options.headers[key] ) {
-          headers[key] = await this.liquid.parseAndRender(this.options.headers[key], ctx.getAll())
-        } 
+      for (const key of Object.keys(this.options.headers)) {
+        headers[key] = await this.liquid.parseAndRender(this.options.headers[key], ctx.getAll())
       }
     }
 
-    console.log(ctx.getAll())
 
     let body = undefined
     if( this.options.body ) {
       body = (await this.liquid.parseAndRender(this.options.body, ctx.getAll())).replace(/(?:\r\n|\r|\n|)/g, '')
     }
-    console.log(this.options.headers)
-    console.log(headers)
-    console.log(body)
     const rpOption = {
       'resolveWithFullResponse': true,
       method,
@@ -124,7 +116,6 @@ export default <ITagImplOptions>{
 
     try {
       const jsonRes = JSON.parse(res.body)
-      console.log(jsonRes)
       if (Object.prototype.toString.call(jsonRes) === '[object Object]') {
         jsonRes.__http_status_code__ = res.statusCode
       }
