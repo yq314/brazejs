@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/yq314/brazejs/compare/v1.5.0...v1.6.0) (2020-10-29)
+
+
+### Features
+
+* support headers in connected content ([c1f45ad](https://github.com/yq314/brazejs/commit/c1f45ad))
+
 # [1.5.0](https://github.com/yq314/brazejs/compare/v1.4.0...v1.5.0) (2020-03-17)
 
 
