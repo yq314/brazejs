@@ -256,52 +256,51 @@ describe('braze/tags/connected_content', function () {
     })
   })
 
-  describe("headers should be pulled correctly", async function() {
-    
+  describe('headers should be pulled correctly', async function () {
     beforeEach(function () {
       nock('http://localhost:8080', {
-      reqheaders: {
-        'User-Agent': 'brazejs-client',
-        'testHeader': 'headerValue'
-      }
-    })
-      .post('/headertest')
-      .reply(200, 'pass')
-      .persist()
-      
-      nock('http://localhost:8080', {
-      reqheaders: {
-        'User-Agent': 'differentAgent',
-        'testHeader': 'headerValue'
-      }
-    })
-      .post('/agent2')
-      .reply(200, 'pass')
-      .persist()
+        reqheaders: {
+          'User-Agent': 'brazejs-client',
+          'testHeader': 'headerValue'
+        }
+      })
+        .post('/headertest')
+        .reply(200, 'pass')
+        .persist()
 
       nock('http://localhost:8080', {
-      reqheaders: {
-        'User-Agent': 'brazejs-client',
-      }
-    })
-      .post('/noheaders')
-      .reply(200, 'pass no headers')
-      .persist()
+        reqheaders: {
+          'User-Agent': 'differentAgent',
+          'testHeader': 'headerValue'
+        }
+      })
+        .post('/agent2')
+        .reply(200, 'pass')
+        .persist()
+
+      nock('http://localhost:8080', {
+        reqheaders: {
+          'User-Agent': 'brazejs-client'
+        }
+      })
+        .post('/noheaders')
+        .reply(200, 'pass no headers')
+        .persist()
     })
 
-    it('should pull correct header from connected content block', async function() {
+    it('should pull correct header from connected content block', async function () {
       const src = '{% connected_content http://localhost:8080/headertest :headers { "testHeader": "headerValue" } \n:method post %}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
-    it('should pull correct header from multi-line connected content block', async function() {
+    it('should pull correct header from multi-line connected content block', async function () {
       const src = '{% connected_content \nhttp://localhost:8080/headertest \n:body p \n:headers { \n"testHeader": "headerValue" \n} \n:content_type application/json \n:method post \n%}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
-    it('should pull differently formatted JSON header from multi-line connected content block', async function() {
+    it('should pull differently formatted JSON header from multi-line connected content block', async function () {
       const src = '{% connected_content \nhttp://localhost:8080/headertest \n:body p \n:headers { \n"testHeader" :      "headerValue",\n "someId": 2123  \n} \n:content_type application/json \n:method post \n%}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
@@ -315,7 +314,7 @@ describe('braze/tags/connected_content', function () {
 
     it('should handle json headers with attribute tags', async function () {
       const src = '{% connected_content http://localhost:8080/agent2 :headers { "User-Agent": "{{otherAgent}}", "testHeader": "headerValue" } :method post %}'
-      const html = await liquid.parseAndRender(src, {"otherAgent": "differentAgent"})
+      const html = await liquid.parseAndRender(src, { 'otherAgent': 'differentAgent' })
       expect(html).to.equal('pass')
     })
 
@@ -324,6 +323,5 @@ describe('braze/tags/connected_content', function () {
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
-    
   })
 })

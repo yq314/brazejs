@@ -21,7 +21,7 @@ export default <ITagImplOptions>{
     if (options) {
       // first extract the headers option if it exists, because the headers JSON will contain a /\s+:/
       const headersMatch = options.match(headerRegex)
-      if( headersMatch != null ) {
+      if (headersMatch != null) {
         this.options.headers = JSON.parse(headersMatch[1])
       }
       // then replace the headers option if it exists, and proceed as normal for the other options
@@ -29,10 +29,10 @@ export default <ITagImplOptions>{
         if (optStr === '') return
 
         const opts = optStr.split(/\s+/)
-        if( opts[0] === "headers" ) {
-          console.error("Headers JSON malformed. Check your headers value")
+        if (opts[0] === 'headers') {
+          console.error('Headers JSON malformed. Check your headers value')
         }
-        this.options[opts[0]] = opts.length > 1 ? opts[1] : true;
+        this.options[opts[0]] = opts.length > 1 ? opts[1] : true
       })
     }
   },
@@ -63,16 +63,15 @@ export default <ITagImplOptions>{
       'Content-Type': contentType,
       'Accept': this.options.content_type
     }
-    if( this.options.headers ) {
+    if (this.options.headers) {
       // Add specified headers to the headers
       for (const key of Object.keys(this.options.headers)) {
         headers[key] = await this.liquid.parseAndRender(this.options.headers[key], ctx.getAll())
       }
     }
 
-
-    let body = undefined
-    if( this.options.body ) {
+    let body
+    if (this.options.body) {
       body = (await this.liquid.parseAndRender(this.options.body, ctx.getAll())).replace(/(?:\r\n|\r|\n|)/g, '')
     }
     const rpOption = {
