@@ -3,7 +3,6 @@ import Context from '../../context/context'
 import ITagImplOptions from '../../template/tag/itag-impl-options'
 // @ts-ignore
 import * as rp_ from 'request-promise-cache'
-import { OperationCanceledException } from 'typescript'
 const rp = rp_
 
 const re = new RegExp(`(https?(?:[^\\s\\{\\}]+|\\{\\{.*?\\}\\})+)(\\s+(\\s|.)*)?$`)
