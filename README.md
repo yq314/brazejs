@@ -88,7 +88,7 @@ Braze's liquid is a subset of Shopify's liquid, hence some incompatible features
         {% connected_content http://numbersapi.com/random/trivia :save trivia :cache 900 :basic_auth <secret_name> %}
         ```
         
-        Supported options: `:basic_auth`, `:content_type`, `:save`, `:cache`, `:method`, `:body`
+        Supported options: `:basic_auth`, `:content_type`, `:save`, `:cache`, `:method`, `:body`, `:headers`
         
         For basic auth to work, you'll need to add the username and password into the [context][liquidjs/context] object.
         ```
