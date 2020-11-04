@@ -70,10 +70,21 @@ export default <ITagImplOptions>{
       }
     }
 
-    let body
-    if (this.options.body) {
-      body = (await this.liquid.parseAndRender(this.options.body, ctx.getAll())).replace(/(?:\r\n|\r|\n|)/g, '')
+    let body = this.options.body
+    if( this.options.body ) { 
+      if( method.toUpperCase() === "POST" && contentType.toLowerCase().includes("application/json") ) {
+        const jsonBody = {}
+        for( const element of this.options.body.split("&") ) {
+          const bodyElementSplit = new String(element).split("=")
+          jsonBody[bodyElementSplit[0]] = (await this.liquid.parseAndRender(bodyElementSplit[1], ctx.getAll())).replace(/(?:\r\n|\r|\n|)/g, '')
+        }
+        body = JSON.stringify(jsonBody)
+      } else {
+        body = await this.liquid.parseAndRender(this.options.body, ctx.getAll())
+        console.log(body)
+      }
     }
+
     const rpOption = {
       'resolveWithFullResponse': true,
       method,

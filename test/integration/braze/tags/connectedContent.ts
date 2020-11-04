@@ -295,13 +295,13 @@ describe('braze/tags/connected_content', function () {
     })
 
     it('should pull correct header from multi-line connected content block', async function () {
-      const src = '{% connected_content \nhttp://localhost:8080/headertest \n:body p \n:headers { \n"testHeader": "headerValue" \n} \n:content_type application/json \n:method post \n%}'
+      const src = '{% connected_content \nhttp://localhost:8080/headertest \n:headers { \n"testHeader": "headerValue" \n} \n:content_type application/json \n:method post \n%}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
     it('should pull differently formatted JSON header from multi-line connected content block', async function () {
-      const src = '{% connected_content \nhttp://localhost:8080/headertest \n:body p \n:headers { \n"testHeader" :      "headerValue",\n "someId": 2123  \n} \n:content_type application/json \n:method post \n%}'
+      const src = '{% connected_content \nhttp://localhost:8080/headertest \n:headers { \n"testHeader" :      "headerValue",\n "someId": 2123  \n} \n:content_type application/json \n:method post \n%}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
@@ -323,5 +323,40 @@ describe('braze/tags/connected_content', function () {
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
+  })
+
+  describe('process json body', async function() {
+
+    beforeEach(function () {
+      nock('http://localhost:8080', {
+        reqheaders: {
+          'User-Agent': 'brazejs-client'
+        }
+      })
+        .post('/bodytest', {"body":"content"})
+        .reply(200, 'pass')
+        .post('/bodytest_multiple', {"body": "content", "body2":"content2"})
+        .reply(200, 'pass')
+        .persist()
+    })
+
+    it("should parse body to json", async function() {
+      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body=content } %}`
+      const html = await liquid.parseAndRender(src)
+      expect(html).to.equal('pass')
+    })
+
+    it("should parse body to json using variables", async function() {
+      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body={{content}} } %}`
+      const html = await liquid.parseAndRender(src, { content: "content" })
+      expect(html).to.equal('pass')
+    })
+
+    it("should parse body to json using variables", async function() {
+      const src = `{% connected_content http://localhost:8080/bodytest_multiple :method post :content_type application/json :body body={{content}}&body2=content2 } %}`
+      const html = await liquid.parseAndRender(src, { content: "content" })
+      expect(html).to.equal('pass')
+    })
+
   })
 })
