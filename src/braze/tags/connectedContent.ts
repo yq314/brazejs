@@ -71,16 +71,14 @@ export default <ITagImplOptions>{
     }
 
     let body = this.options.body
-    if( this.options.body ) { 
-      if( method.toUpperCase() === "POST" && contentType.toLowerCase().includes("application/json") ) {
+    if (this.options.body) {
+      if (method.toUpperCase() === 'POST' && contentType.toLowerCase().includes('application/json')) {
         const jsonBody = {}
-        for( const element of this.options.body.split("&") ) {
-          const bodyElementSplit = new String(element).split("=")
+        for (const element of this.options.body.split('&')) {
+          const bodyElementSplit = element.split('=')
           jsonBody[bodyElementSplit[0]] = (await this.liquid.parseAndRender(bodyElementSplit[1], ctx.getAll())).replace(/(?:\r\n|\r|\n|)/g, '')
         }
         body = JSON.stringify(jsonBody)
-        console.log(jsonBody)
-        console.log(body)
       } else {
         body = await this.liquid.parseAndRender(this.options.body, ctx.getAll())
       }
