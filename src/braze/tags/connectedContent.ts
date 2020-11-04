@@ -79,9 +79,10 @@ export default <ITagImplOptions>{
           jsonBody[bodyElementSplit[0]] = (await this.liquid.parseAndRender(bodyElementSplit[1], ctx.getAll())).replace(/(?:\r\n|\r|\n|)/g, '')
         }
         body = JSON.stringify(jsonBody)
+        console.log(jsonBody)
+        console.log(body)
       } else {
         body = await this.liquid.parseAndRender(this.options.body, ctx.getAll())
-        console.log(body)
       }
     }
 

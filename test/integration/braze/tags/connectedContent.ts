@@ -337,6 +337,9 @@ describe('braze/tags/connected_content', function () {
         .reply(200, 'pass')
         .post('/bodytest_multiple', {"body": "content", "body2":"content2"})
         .reply(200, 'pass')
+        // You can't pass nested objects in Braze, but you can pass json strings
+        .post('/bodytest_nested', {"body": "{ \"nest\": \"nestedcontent\" }"})
+        .reply(200, 'pass')
         .persist()
     })
 
@@ -352,9 +355,15 @@ describe('braze/tags/connected_content', function () {
       expect(html).to.equal('pass')
     })
 
-    it("should parse body to json using variables", async function() {
+    it("should parse multiple body fields to json", async function() {
       const src = `{% connected_content http://localhost:8080/bodytest_multiple :method post :content_type application/json :body body={{content}}&body2=content2 } %}`
       const html = await liquid.parseAndRender(src, { content: "content" })
+      expect(html).to.equal('pass')
+    })
+
+    it("should parse a nested body to json using variables", async function() {
+      const src = `{% connected_content http://localhost:8080/bodytest_nested :method post :content_type application/json :body body={{content}} } %}`
+      const html = await liquid.parseAndRender(src, { content: '{ "nest": "nestedcontent" }' })
       expect(html).to.equal('pass')
     })
 
