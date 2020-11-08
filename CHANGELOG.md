@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/yq314/brazejs/compare/v1.6.0...v1.7.0) (2020-11-08)
+
+
+### Features
+
+* Added support for JSON body parsing ([37ed951](https://github.com/yq314/brazejs/commit/37ed951))
+
 # [1.6.0](https://github.com/yq314/brazejs/compare/v1.5.0...v1.6.0) (2020-10-29)
 
 
