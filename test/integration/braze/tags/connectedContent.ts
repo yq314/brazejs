@@ -375,12 +375,12 @@ describe('braze/tags/connected_content', function () {
         }
       })
         .post('/bodytest', { body: 'content' })
-        .reply(200, 'pass')
+        .reply(200, { res: 'pass' })
         .post('/bodytest_multiple', { body: 'content', body2: 'content2' })
-        .reply(200, 'pass')
+        .reply(200, { res: 'pass' })
         // You can't pass nested objects in Braze, but you can pass json strings
         .post('/bodytest_nested', { body: '{ "nest": "nestedcontent" }' })
-        .reply(200, 'pass')
+        .reply(200, { res: 'pass' })
         .persist()
     })
 
