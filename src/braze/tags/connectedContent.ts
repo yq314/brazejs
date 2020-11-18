@@ -129,7 +129,7 @@ export default <ITagImplOptions>{
       }
       ctx.environments[this.options.save || 'connected'] = jsonRes
     } catch (error) {
-      return res.body
+      console.error(`Could not parse response body: "${res.body}"`)
     }
   }
 }
