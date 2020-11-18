@@ -385,25 +385,25 @@ describe('braze/tags/connected_content', function () {
     })
 
     it('should parse body to json', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body=content } %}`
+      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body=content } %}{{connected.res}}`
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
     it('should parse body to json using variables', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body={{content}} } %}`
+      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body={{content}} } %}{{connected.res}}`
       const html = await liquid.parseAndRender(src, { content: 'content' })
       expect(html).to.equal('pass')
     })
 
     it('should parse multiple body fields to json', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest_multiple :method post :content_type application/json :body body={{content}}&body2=content2 } %}`
+      const src = `{% connected_content http://localhost:8080/bodytest_multiple :method post :content_type application/json :body body={{content}}&body2=content2 } %}{{connected.res}}`
       const html = await liquid.parseAndRender(src, { content: 'content' })
       expect(html).to.equal('pass')
     })
 
     it('should parse a nested body to json using variables', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest_nested :method post :content_type application/json :body body={{content}} } %}`
+      const src = `{% connected_content http://localhost:8080/bodytest_nested :method post :content_type application/json :body body={{content}} } %}{{connected.res}}`
       const html = await liquid.parseAndRender(src, { content: '{ "nest": "nestedcontent" }' })
       expect(html).to.equal('pass')
     })
