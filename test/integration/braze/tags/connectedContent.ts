@@ -65,39 +65,69 @@ describe('braze/tags/connected_content', function () {
       }
     })
       .get('/text')
-      .reply(200, { res: 'text response' })
+      .reply(200, 'text response')
 
-    const src = '{% connected_content http://localhost:8080/text %}{{connected.res}}'
+    const src = '{% connected_content http://localhost:8080/text %}'
     const html = await liquid.parseAndRender(src)
     return expect(html).to.equal('text response')
   })
 
-  it('should add status code to result', async function () {
+  it('should not add status code to result if returning JSON w/ non-200', async function () {
     nock('http://localhost:8080', {
       reqheaders: {
         'User-Agent': 'brazejs-client'
       }
     })
       .get('/500')
-      .reply(500, { a: 'b' })
+      .reply(500, { a: 'b' }, { "Content-Type": "application/json" })
 
     const src = '{% connected_content http://localhost:8080/500 :save user %}{{user.__http_status_code__}}'
     const html = await liquid.parseAndRender(src)
-    return expect(html).to.equal('500')
+    return expect(html).to.equal('')
   })
 
-  it('should not add status code if result is not object', async function () {
+  it('should not add status code to result if returning non-JSON 200', async function () {
     nock('http://localhost:8080', {
       reqheaders: {
         'User-Agent': 'brazejs-client'
       }
     })
-      .get('/200')
-      .reply(200, [1, 2])
+      .get('/notjson')
+      .reply(200, "This is not JSON")
 
-    const src = '{% connected_content http://localhost:8080/200 :save user %}{{user.__http_status_code__}}'
+    const src = '{% connected_content http://localhost:8080/notjson :save user %}{{user.__http_status_code__}}'
     const html = await liquid.parseAndRender(src)
-    return expect(html).to.equal('')
+    return expect(html).to.equal('This is not JSON')
+  })
+
+  it('should add status code to result if returning JSON w/ 200', async function () {
+    nock('http://localhost:8080', {
+      reqheaders: {
+        'User-Agent': 'brazejs-client'
+      }
+    })
+      .get('/200withjson')
+      .reply(200, { a: 'b' }, { "Content-Type": "application/json" })
+
+    const src = '{% connected_content http://localhost:8080/200withjson :save user %}{{user.__http_status_code__}}'
+    const html = await liquid.parseAndRender(src)
+    return expect(html).to.equal('200')
+  })
+
+  // Braze no longer requires returned JSON to be an object in order to load it into the saved variable
+  // Instead, any valid JSON will do this
+  it('should add status code if result is not object, but is valid JSON', async function () {
+    nock('http://localhost:8080', {
+      reqheaders: {
+        'User-Agent': 'brazejs-client'
+      }
+    })
+      .get('/200withnonobjectjson')
+      .reply(200, '[1, 2]')
+
+    const src = '{% connected_content http://localhost:8080/200withnonobjectjson :save user %}{{user.__http_status_code__}}'
+    const html = await liquid.parseAndRender(src)
+    return expect(html).to.equal('200')
   })
 
   describe('basic auth should work', async function () {
@@ -109,9 +139,9 @@ describe('braze/tags/connected_content', function () {
       })
         .get('/auth')
         .basicAuth({ user: 'username', pass: 'password' })
-        .reply(200, { res: 'auth successful' })
+        .reply(200, 'auth successful')
 
-      const src = '{% connected_content http://localhost:8080/auth :basic_auth secrets %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/auth :basic_auth secrets %}'
       const html = await liquid.parseAndRender(src, {
         __secrets: {
           secrets: {
@@ -167,9 +197,9 @@ describe('braze/tags/connected_content', function () {
       }
     })
       .post('/post', 'a=b&c=d')
-      .reply(201, { res: 'ok' })
+      .reply(201, 'ok')
 
-    const src = '{% connected_content http://localhost:8080/post :method post :body a=b&c=d %}{{connected.res}}'
+    const src = '{% connected_content http://localhost:8080/post :method post :body a=b&c=d %}'
     const html = await liquid.parseAndRender(src)
     return expect(html).to.equal('ok')
   })
@@ -182,9 +212,9 @@ describe('braze/tags/connected_content', function () {
       }
     })
       .get('/plain')
-      .reply(200, { res: 'plain text response' })
+      .reply(200, 'plain text response')
 
-    const src = '{% connected_content http://localhost:8080/plain :content_type text/plain %}{{connected.res}}'
+    const src = '{% connected_content http://localhost:8080/plain :content_type text/plain %}'
     const html = await liquid.parseAndRender(src)
     return expect(html).to.equal('plain text response')
   })
@@ -199,9 +229,9 @@ describe('braze/tags/connected_content', function () {
         }
       })
         .get('/cache')
-        .reply(200, { res: 'cached response' })
+        .reply(200, 'cached response')
         .post('/cache', 'a=b')
-        .reply(201, { res: 'cached response' })
+        .reply(201, 'cached response')
     })
 
     afterEach(function () {
@@ -209,7 +239,7 @@ describe('braze/tags/connected_content', function () {
     })
 
     it('should cache for 5 mins by default', async function () {
-      const src = '{% connected_content http://localhost:8080/cache %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/cache %}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('cached response')
 
@@ -223,7 +253,7 @@ describe('braze/tags/connected_content', function () {
     })
 
     it('should not cache for non GET request', async function () {
-      const src = '{% connected_content http://localhost:8080/cache :method post :body a=b %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/cache :method post :body a=b %}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('cached response')
 
@@ -232,7 +262,7 @@ describe('braze/tags/connected_content', function () {
     })
 
     it('should cache for specified period', async function () {
-      const src = '{% connected_content http://localhost:8080/cache :cache 100 %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/cache :cache 100 %}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('cached response')
 
@@ -246,7 +276,7 @@ describe('braze/tags/connected_content', function () {
     })
 
     it('should not cache if set to 0', async function () {
-      const src = '{% connected_content http://localhost:8080/cache :cache 0 %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/cache :cache 0 %}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('cached response')
 
@@ -265,7 +295,7 @@ describe('braze/tags/connected_content', function () {
         }
       })
         .post('/headertest')
-        .reply(200, { res: 'pass' })
+        .reply(200, 'pass')
         .persist()
 
       nock('http://localhost:8080', {
@@ -275,7 +305,7 @@ describe('braze/tags/connected_content', function () {
         }
       })
         .post('/agent2')
-        .reply(200, { res: 'pass' })
+        .reply(200, 'pass')
         .persist()
 
       nock('http://localhost:8080', {
@@ -284,42 +314,42 @@ describe('braze/tags/connected_content', function () {
         }
       })
         .post('/noheaders')
-        .reply(200, { res: 'pass no headers' })
+        .reply(200, 'pass no headers')
         .persist()
     })
 
     it('should pull correct header from connected content block', async function () {
-      const src = '{% connected_content http://localhost:8080/headertest :headers { "testHeader": "headerValue" } \n:method post %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/headertest :headers { "testHeader": "headerValue" } \n:method post %}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
     it('should pull correct header from multi-line connected content block', async function () {
-      const src = '{% connected_content \nhttp://localhost:8080/headertest \n:headers { \n"testHeader": "headerValue" \n} \n:content_type application/json \n:method post \n%}{{connected.res}}'
+      const src = '{% connected_content \nhttp://localhost:8080/headertest \n:headers { \n"testHeader": "headerValue" \n} \n:content_type application/json \n:method post \n%}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
     it('should pull differently formatted JSON header from multi-line connected content block', async function () {
-      const src = '{% connected_content \nhttp://localhost:8080/headertest \n:headers { \n"testHeader" :      "headerValue",\n "someId": 2123  \n} \n:content_type application/json \n:method post \n%}{{connected.res}}'
+      const src = '{% connected_content \nhttp://localhost:8080/headertest \n:headers { \n"testHeader" :      "headerValue",\n "someId": 2123  \n} \n:content_type application/json \n:method post \n%}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
     it('should handle malformed json headers', async function () {
-      const src = '{% connected_content http://localhost:8080/noheaders :headers { "User-Agent": "differentAgent", "testHeader": "header :method post %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/noheaders :headers { "User-Agent": "differentAgent", "testHeader": "header :method post %}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass no headers')
     })
 
     it('should handle json headers with attribute tags', async function () {
-      const src = '{% connected_content http://localhost:8080/agent2 :headers { "User-Agent": "{{otherAgent}}", "testHeader": "headerValue" } :method post %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/agent2 :headers { "User-Agent": "{{otherAgent}}", "testHeader": "headerValue" } :method post %}'
       const html = await liquid.parseAndRender(src, { 'otherAgent': 'differentAgent' })
       expect(html).to.equal('pass')
     })
 
     it('should overwrite user-agent header from connected content block', async function () {
-      const src = '{% connected_content http://localhost:8080/agent2 :headers { "User-Agent": "differentAgent", "testHeader": "headerValue" } :method post %}{{connected.res}}'
+      const src = '{% connected_content http://localhost:8080/agent2 :headers { "User-Agent": "differentAgent", "testHeader": "headerValue" } :method post %}'
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
@@ -333,35 +363,35 @@ describe('braze/tags/connected_content', function () {
         }
       })
         .post('/bodytest', { body: 'content' })
-        .reply(200, { res: 'pass' })
+        .reply(200, 'pass')
         .post('/bodytest_multiple', { body: 'content', body2: 'content2' })
-        .reply(200, { res: 'pass' })
+        .reply(200, 'pass')
         // You can't pass nested objects in Braze, but you can pass json strings
         .post('/bodytest_nested', { body: '{ "nest": "nestedcontent" }' })
-        .reply(200, { res: 'pass' })
+        .reply(200, 'pass')
         .persist()
     })
 
     it('should parse body to json', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body=content } %}{{connected.res}}`
+      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body=content } %}`
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
     it('should parse body to json using variables', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body={{content}} } %}{{connected.res}}`
+      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body={{content}} } %}`
       const html = await liquid.parseAndRender(src, { content: 'content' })
       expect(html).to.equal('pass')
     })
 
     it('should parse multiple body fields to json', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest_multiple :method post :content_type application/json :body body={{content}}&body2=content2 } %}{{connected.res}}`
+      const src = `{% connected_content http://localhost:8080/bodytest_multiple :method post :content_type application/json :body body={{content}}&body2=content2 } %}`
       const html = await liquid.parseAndRender(src, { content: 'content' })
       expect(html).to.equal('pass')
     })
 
     it('should parse a nested body to json using variables', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest_nested :method post :content_type application/json :body body={{content}} } %}{{connected.res}}`
+      const src = `{% connected_content http://localhost:8080/bodytest_nested :method post :content_type application/json :body body={{content}} } %}`
       const html = await liquid.parseAndRender(src, { content: '{ "nest": "nestedcontent" }' })
       expect(html).to.equal('pass')
     })
@@ -375,35 +405,35 @@ describe('braze/tags/connected_content', function () {
         }
       })
         .post('/bodytest', { body: 'content' })
-        .reply(200, { res: 'pass' })
+        .reply(200, 'pass')
         .post('/bodytest_multiple', { body: 'content', body2: 'content2' })
-        .reply(200, { res: 'pass' })
+        .reply(200, 'pass')
         // You can't pass nested objects in Braze, but you can pass json strings
         .post('/bodytest_nested', { body: '{ "nest": "nestedcontent" }' })
-        .reply(200, { res: 'pass' })
+        .reply(200, 'pass')
         .persist()
     })
 
     it('should parse body to json', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body=content } %}{{connected.res}}`
+      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body=content } %}`
       const html = await liquid.parseAndRender(src)
       expect(html).to.equal('pass')
     })
 
     it('should parse body to json using variables', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body={{content}} } %}{{connected.res}}`
+      const src = `{% connected_content http://localhost:8080/bodytest :method post :content_type application/json :body body={{content}} } %}`
       const html = await liquid.parseAndRender(src, { content: 'content' })
       expect(html).to.equal('pass')
     })
 
     it('should parse multiple body fields to json', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest_multiple :method post :content_type application/json :body body={{content}}&body2=content2 } %}{{connected.res}}`
+      const src = `{% connected_content http://localhost:8080/bodytest_multiple :method post :content_type application/json :body body={{content}}&body2=content2 } %}`
       const html = await liquid.parseAndRender(src, { content: 'content' })
       expect(html).to.equal('pass')
     })
 
     it('should parse a nested body to json using variables', async function () {
-      const src = `{% connected_content http://localhost:8080/bodytest_nested :method post :content_type application/json :body body={{content}} } %}{{connected.res}}`
+      const src = `{% connected_content http://localhost:8080/bodytest_nested :method post :content_type application/json :body body={{content}} } %}`
       const html = await liquid.parseAndRender(src, { content: '{ "nest": "nestedcontent" }' })
       expect(html).to.equal('pass')
     })
