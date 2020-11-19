@@ -126,16 +126,13 @@ export default <ITagImplOptions>{
       try{ 
         const jsonRes = JSON.parse(res.body)
         jsonRes.__http_status_code__ = res.statusCode
-        console.log(jsonRes)
         ctx.environments[this.options.save || 'connected'] = jsonRes
       } catch (error) {
-        // TODO what does Braze do in this situation?
-        // if( res.headers.contentType != undefined && 
-        //            res.headers.contentType.toLowerCase().contains('application/json') ) {
-        //   console.error(`Failed to parse body as JSON: "${res.body}"`)
-        // } else {
+        if( res.headers["content-type"] != undefined && res.headers["content-type"].includes('json') ) {
+          console.error(`Failed to parse body as JSON: "${res.body}"`)
+        } else {
           return res.body
-        // }
+        }
       }
     } else {
       console.error(`${renderedUrl} responded with ${res.statusCode}:\n` + 

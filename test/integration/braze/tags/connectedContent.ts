@@ -100,6 +100,20 @@ describe('braze/tags/connected_content', function () {
     return expect(html).to.equal('This is not JSON')
   })
 
+  it('should not print or capture result if json is expected in header but invalid json is found', async function () {
+    nock('http://localhost:8080', {
+      reqheaders: {
+        'User-Agent': 'brazejs-client'
+      }
+    })
+      .get('/shouldbejsonbutisnt')
+      .reply(200, "{ bad: json", { "Content-Type": "application/json" })
+
+    const src = '{% connected_content http://localhost:8080/shouldbejsonbutisnt :save user %}{{connected}}'
+    const html = await liquid.parseAndRender(src)
+    return expect(html).to.equal('')
+  })
+
   it('should add status code to result if returning JSON w/ 200', async function () {
     nock('http://localhost:8080', {
       reqheaders: {
