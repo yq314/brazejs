@@ -122,20 +122,20 @@ export default <ITagImplOptions>{
       res = e
     }
 
-    if( res.statusCode >= 200 && res.statusCode <= 299 ) {
-      try{ 
+    if (res.statusCode >= 200 && res.statusCode <= 299) {
+      try {
         const jsonRes = JSON.parse(res.body)
         jsonRes.__http_status_code__ = res.statusCode
         ctx.environments[this.options.save || 'connected'] = jsonRes
       } catch (error) {
-        if( res.headers["content-type"] != undefined && res.headers["content-type"].includes('json') ) {
+        if (res.headers['content-type'] !== undefined && res.headers['content-type'].includes('json')) {
           console.error(`Failed to parse body as JSON: "${res.body}"`)
         } else {
           return res.body
         }
       }
     } else {
-      console.error(`${renderedUrl} responded with ${res.statusCode}:\n` + 
+      console.error(`${renderedUrl} responded with ${res.statusCode}:\n` +
                     `${res.body}`)
     }
   }
