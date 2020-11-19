@@ -79,7 +79,7 @@ describe('braze/tags/connected_content', function () {
       }
     })
       .get('/500')
-      .reply(500, { a: 'b' }, { "Content-Type": "application/json" })
+      .reply(500, { a: 'b' }, { 'Content-Type': 'application/json' })
 
     const src = '{% connected_content http://localhost:8080/500 :save user %}{{user.__http_status_code__}}'
     const html = await liquid.parseAndRender(src)
@@ -93,7 +93,7 @@ describe('braze/tags/connected_content', function () {
       }
     })
       .get('/notjson')
-      .reply(200, "This is not JSON")
+      .reply(200, 'This is not JSON')
 
     const src = '{% connected_content http://localhost:8080/notjson :save user %}{{user.__http_status_code__}}'
     const html = await liquid.parseAndRender(src)
@@ -107,7 +107,7 @@ describe('braze/tags/connected_content', function () {
       }
     })
       .get('/shouldbejsonbutisnt')
-      .reply(200, "{ bad: json", { "Content-Type": "application/json" })
+      .reply(200, '{ bad: json', { 'Content-Type': 'application/json' })
 
     const src = '{% connected_content http://localhost:8080/shouldbejsonbutisnt :save user %}{{connected}}'
     const html = await liquid.parseAndRender(src)
@@ -121,7 +121,7 @@ describe('braze/tags/connected_content', function () {
       }
     })
       .get('/200withjson')
-      .reply(200, { a: 'b' }, { "Content-Type": "application/json" })
+      .reply(200, { a: 'b' }, { 'Content-Type': 'application/json' })
 
     const src = '{% connected_content http://localhost:8080/200withjson :save user %}{{user.__http_status_code__}}'
     const html = await liquid.parseAndRender(src)
