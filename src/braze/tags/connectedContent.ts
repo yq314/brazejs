@@ -122,14 +122,24 @@ export default <ITagImplOptions>{
       res = e
     }
 
-    try {
-      const jsonRes = JSON.parse(res.body)
-      if (Object.prototype.toString.call(jsonRes) === '[object Object]') {
+    if( res.statusCode >= 200 && res.statusCode <= 299 ) {
+      try{ 
+        const jsonRes = JSON.parse(res.body)
         jsonRes.__http_status_code__ = res.statusCode
+        console.log(jsonRes)
+        ctx.environments[this.options.save || 'connected'] = jsonRes
+      } catch (error) {
+        // TODO what does Braze do in this situation?
+        // if( res.headers.contentType != undefined && 
+        //            res.headers.contentType.toLowerCase().contains('application/json') ) {
+        //   console.error(`Failed to parse body as JSON: "${res.body}"`)
+        // } else {
+          return res.body
+        // }
       }
-      ctx.environments[this.options.save || 'connected'] = jsonRes
-    } catch (error) {
-      console.error(`Could not parse response body: "${res.body}"`)
+    } else {
+      console.error(`${renderedUrl} responded with ${res.statusCode}:\n` + 
+                    `${res.body}`)
     }
   }
 }
