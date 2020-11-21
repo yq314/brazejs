@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/yq314/brazejs/compare/v1.7.0...v1.7.1) (2020-11-21)
+
+
+### Bug Fixes
+
+* fix connected-content handling on error ([245c362](https://github.com/yq314/brazejs/commit/245c362))
+
 # [1.7.0](https://github.com/yq314/brazejs/compare/v1.6.0...v1.7.0) (2020-11-08)
 
 
