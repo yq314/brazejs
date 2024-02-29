@@ -3,6 +3,7 @@ const singleQuoted = /'[^']*'/
 const doubleQuoted = /"[^"]*"/
 export const quoted = new RegExp(`${singleQuoted.source}|${doubleQuoted.source}`)
 export const quoteBalanced = new RegExp(`(?:${quoted.source}|[^'"])*`)
+export const notGreadyQuoteBalanced = new RegExp(`(?:${quoted.source}|[^'"])*?`)
 
 // basic types
 export const number = /[+-]?(?:\d+\.?\d*|\.?\d+)/
@@ -35,8 +36,7 @@ export const rangeLine = new RegExp(`^${rangeCapture.source}$`)
 export const attribute = new RegExp(`^\\s*(?:(${identifier.source})\\.)?\\$\\{\\s*([\\s\\S]+?)\\s*\\}\\s*$`)
 
 export const operators = [
-  /\s+or\s+/,
-  /\s+and\s+/,
+  /\s+(?:and|or)\s+/,
   /==|!=|<=|>=|<|>|\s+contains\s+/
 ]
 

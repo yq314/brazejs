@@ -52,7 +52,7 @@ export async function parseExp (exp: string, ctx: Context): Promise<any> {
   let match
   for (let i = 0; i < operatorREs.length; i++) {
     const operatorRE = operatorREs[i]
-    const expRE = new RegExp(`^(${lexical.quoteBalanced.source})(${operatorRE.source})(${lexical.quoteBalanced.source})$`)
+    const expRE = new RegExp(`^(${lexical.notGreadyQuoteBalanced.source})(${operatorRE.source})(${lexical.quoteBalanced.source})$`)
     if ((match = exp.match(expRE))) {
       const l = await parseExp(match[1], ctx)
       const op = binaryOperators[match[2].trim()]
